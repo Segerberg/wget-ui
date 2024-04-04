@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ gettext('Hello') }}</h1>
+<table>
+    <thead>
+    <tr>
+    <th>Title</th>
+    <th>Uri</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for target in targets %}
+    <tr>
+        <td>{{target.title}}</td>
+        <td>{{target.uri}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
