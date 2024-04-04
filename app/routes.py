@@ -6,3 +6,8 @@ from app.models import Target
 def index():
     targets = db.session.query(Target).all()
     return render_template('index.html', targets=targets)
+
+@app.route('/target/<id>')
+def target(id):
+    target = db.session.query(Target).filter(id==id).first()
+    return render_template('target.html', target=target)

@@ -12,9 +12,12 @@ class Target(db.Model):
     def __repr__(self):
         return self.title
 
+
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
+    # software
+    # settings
     result = db.Column(db.String(128), index=True)
 
     def __repr__(self):
