@@ -20,7 +20,12 @@
       {% endfor %}
       </tbody>
     </table>
-    <button class="btn-sm">Add Target</button>
+    <button class="btn-sm" id="add-target">Add Target</button>
+    <script>
+      document.getElementById("add-target").addEventListener("click", function() {
+        window.location.href = "{{url_for('addTarget')}}"
+      });
+      </script>
   </div>
   <footer class="footer">
     <div class="container text-center">

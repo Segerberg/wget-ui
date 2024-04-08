@@ -3,7 +3,8 @@ from flask import current_app
 import uuid
 
 class Target(db.Model):
-    id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
+    #id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(128), index=True)
     uri = db.Column(db.String(128), index=True)
     description = db.Column(db.String(128), index=True)
