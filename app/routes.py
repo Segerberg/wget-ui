@@ -26,3 +26,7 @@ def addTarget():
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('addtarget.html')
+
+@app.route('/delete_target/<int:id>')
+def deleteTarget(id):
+    return redirect(url_for('index'))
