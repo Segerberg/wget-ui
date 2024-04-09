@@ -27,6 +27,11 @@ def addTarget():
         return redirect(url_for('index'))
     return render_template('addtarget.html')
 
-@app.route('/delete_target/<int:id>')
+@app.route('/delete/<int:id>', methods=['POST'])
 def deleteTarget(id):
+    target = Target.query.get_or_404(id)
+    db.session.delete(target)
+    db.session.commit()
+    #flash('Target deleted successfully', 'success')
     return redirect(url_for('index'))
+    #return render_template('index.html')
