@@ -12,7 +12,7 @@
       </thead>
       <tbody>
       {% for target in targets %}
-        <tr>
+        <tr id="row-{{target.id}}">
           <th scope="row">{{target.id}}</th>
           <td><a href="{{url_for('target', id=target.id)}}">{{target.title}}</a> </td>
           <td>{{target.uri}}</td>
