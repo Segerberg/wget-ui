@@ -1,24 +1,26 @@
+{% extends "base.html" %}
 {% block content %}
  <div class="container mt-4">
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Uri</th>
+          <th scope="col">{{ gettext('#')}}</th>
+          <th scope="col">{{ gettext('Title')}}</th>
+          <th scope="col">{{ gettext('Description')}}</th>
 
         </tr>
       </thead>
       <tbody>
       {% for target in targets %}
         <tr>
-          <th scope="row">{{target.id}}</th>
-          <td><a href="{{url_for('target', id=target.id)}}">{{target.title}}</a> </td>
-          <td>{{target.uri}}</td>
+            <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.id}}</a></th>
+          <td><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </td>
+          <td>{{target.description}}</td>
         </tr>
       {% endfor %}
       </tbody>
     </table>
-    <button class="btn-sm">Add Target</button>
+    <button class="btn btn-sm btn-outline-success" href="#" data-bs-toggle="modal" data-bs-target="#addTargetModal">Add Target</button>
   </div>
 {% endblock %}
+{% include 'add_target_modal.html' %}
