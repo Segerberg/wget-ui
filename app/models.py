@@ -8,9 +8,9 @@ class Target(db.Model):
     title = db.Column(db.String(128), index=True)
     uri = db.Column(db.String(128), index=True)
     description = db.Column(db.String(128), index=True)
-    jobs = db.relationship('Job', backref='target', lazy='dynamic')
-    seeds = db.relationship('Seed', backref='target', lazy='dynamic')
-    content_owners = db.relationship('ContentOwners', backref='target', lazy='dynamic')
+    jobs = db.relationship('Job', backref='targets', lazy='dynamic')
+    seeds = db.relationship('Seed', backref='targets', lazy='dynamic')
+    content_owners = db.relationship('ContentOwner', backref='targets', lazy='dynamic')
     def __repr__(self):
         return self.title
 
@@ -21,7 +21,7 @@ class Crawler(db.Model):
     type = db.Column(db.String(128))
     cmd = db.Column(db.String(128), index=True)
     settings = db.Column(db.Text, index=True)
-    jobs = db.relationship('Job', backref='crawler', lazy='dynamic')
+    jobs = db.relationship('Job', backref='crawlers', lazy='dynamic')
     def __repr__(self):
         return self.name
 
@@ -35,39 +35,31 @@ class Job(db.Model):
     schedule = db.Column(db.String(100))
     startDateTime = db.Column(db.DateTime)
     EndDateTime = db.Column(db.DateTime)
-
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
-    target = db.relationship('Targets', backref=db.backref('jobs', lazy=True))
-
     crawler_id = db.Column(db.Integer, db.ForeignKey('crawler.id'))
-    crawler = db.relationship('Crawlers', backref=db.backref('jobs', lazy=True))
-
-    result = db.Column(db.String(128), index=True)
+    result = db.Column(db.String(128))
 
     def __repr__(self):
         return self.id
 
 
-class ContentOwners(db.Model):
+class ContentOwner(db.Model):
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(128), index=True)
     reference_code = db.Column(db.String(128), index=True)
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
-    target = db.relationship('Targets', backref=db.backref('contentowners', lazy=True))
     def __repr__(self):
         return self.name
 
 
-class Seeds(db.Model):
+class Seed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(128), index=True)
     depth = db.Column(db.Integer, index=True)
     exclude_patterns = db.Column(db.String(128), index=True)
     include_patterns = db.Column(db.String(128), index=True)
     domains = db.Column(db.String(128), index=True)
-
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
-    target = db.relationship('Targets', backref=db.backref('seeds', lazy=True))
     def __repr__(self):
         return self.url
 
