@@ -17,7 +17,7 @@ def index():
 def targets():
     addtargetform = AddTargetForm()
     if addtargetform.validate_on_submit():
-        target = Target(title=addtargetform.title.data, description=addtargetform.description.data)
+        target = Target(title=addtargetform.title.data, description=addtargetform.description.data, user_id=current_user.id)
         db.session.add(target)
         db.session.commit()
         return redirect(url_for('targets'))

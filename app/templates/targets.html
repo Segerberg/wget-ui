@@ -1,26 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
  <div class="container mt-4">
+     <h2>{{ gettext('My targets')}}</h2>
     <table class="table">
       <thead>
         <tr>
           <th scope="col">{{ gettext('#')}}</th>
           <th scope="col">{{ gettext('Title')}}</th>
           <th scope="col">{{ gettext('Description')}}</th>
-
         </tr>
       </thead>
       <tbody>
       {% for target in targets %}
+      {% if target.user_id == current_user.id %}
         <tr>
             <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.id}}</a></th>
           <td><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </td>
           <td>{{target.description}}</td>
         </tr>
+      {% endif %}
       {% endfor %}
       </tbody>
     </table>
     <button class="btn btn-sm btn-outline-success" href="#" data-bs-toggle="modal" data-bs-target="#addTargetModal">Add Target</button>
+  </div>
+ <div class="container mt-4">
+     <h2>{{ gettext('Others targets')}}</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">{{ gettext('#')}}</th>
+          <th scope="col">{{ gettext('Title')}}</th>
+          <th scope="col">{{ gettext('Description')}}</th>
+          <th scope="col">{{ gettext('Responsible')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for target in targets %}
+      {% if target.user_id != current_user.id %}
+        <tr>
+            <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.id}}</a></th>
+          <td><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </td>
+          <td>{{target.description}}</td>
+           <td>{{target.user_id}}</td>
+        </tr>
+      {% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}
 {% include 'add_target_modal.html' %}
