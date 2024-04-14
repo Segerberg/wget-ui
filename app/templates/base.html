@@ -7,15 +7,52 @@
     <title>Wget-UI</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="{{url_for('index')}}">Dashboard</a>
-      <!-- Add any navbar items, links, dropdowns here -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{{url_for('index')}}">Dashboard</a>
+    <div class="ml-auto">
+          {% if current_user.is_authenticated %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Administration</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
+        </li>
+      </ul>
+        {% else %}
+        <ul class="navbar-nav">
+           <li class="nav-item">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+        </li>
+        </ul>
+        {% endif %}
     </div>
-  </nav>
-
+  </div>
+</nav>
 {% block content %}
 {% endblock %}
+<!-- alert-warning alert-success alert-primary alert alert-danger -->
+{% block messages %}
+
+{% endblock%}
 <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+  <footer class="footer">
+    <div class="container text-center">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+<div class="alert-fixed">
+    <div class="alert {{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+    </div>
+  </footer>
 </body>
 </html>
