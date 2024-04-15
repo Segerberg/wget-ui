@@ -16,3 +16,11 @@ class LoginForm(FlaskForm):
 class AddTargetForm(FlaskForm):
     title = StringField('Title')
     description = TextAreaField('Description')
+
+
+class AddSeedForm(FlaskForm):
+    url = StringField('Url')
+    depth = StringField('Depth')
+    exclude_patterns = StringField('Exclude regex')
+    include_patterns = StringField('Include regex')
+    domains = StringField('Allowed Domains')

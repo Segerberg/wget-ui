@@ -9,7 +9,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="{{url_for('index')}}">{{ gettext('Dashboard')}}</a>
+    <a class="navbar-brand" href="{{url_for('index')}}">{{ gettext('GU-WEBARCHIVING')}}</a>
     <div class="ml-auto">
           {% if current_user.is_authenticated %}
       <ul class="navbar-nav">
@@ -17,7 +17,7 @@
           <a class="nav-link" href="{{url_for('targets')}}">{{ gettext('Targets')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Administration</a>
+          <a class="nav-link" href="#">{{ gettext('Administration')}}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('logout')}}">{{ gettext('Logout')}}</a>

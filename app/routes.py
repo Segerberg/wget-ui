@@ -1,7 +1,7 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
-from app.models import Target, User
-from app.forms import LoginForm, AddTargetForm
+from app.models import Target, User, Seed
+from app.forms import LoginForm, AddTargetForm, AddSeedForm
 from flask_login import current_user, login_user, logout_user, login_required
 
 
@@ -22,13 +22,34 @@ def targets():
         db.session.commit()
         return redirect(url_for('targets'))
     targets = db.session.query(Target).all()
-    return render_template('targets.html', targets=targets, AddTargetForm=addtargetform)
+    return render_template('targets.html', targets=targets, AddTargetForm=addtargetform, User=User)
 
 
-@app.route('/targets/<id>')
+@app.route('/targets/<id>',methods=['GET', 'POST'])
 def targetDetail(id):
-    target = db.session.query(Target).filter(id==id).first()
-    return render_template('target_detail.html', target=target)
+    addseedform = AddSeedForm()
+    if request.method == 'POST':
+        if request.form['type'] == 'addSeed':
+            if addseedform.validate_on_submit():
+                seed = Seed(url=addseedform.url.data, depth=addseedform.depth.data,
+                            exclude_patterns=addseedform.exclude_patterns.data,
+                            include_patterns=addseedform.include_patterns.data, domains=addseedform.domains.data,
+                            target_id=id)
+                db.session.add(seed)
+                db.session.commit()
+                return redirect(url_for('targetDetail',id=id))
+
+    target = db.get_or_404(Target, id)
+    seeds = Seed.query.filter_by(target_id=id).all()
+    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
+
+
+@app.route('/deletetarget/<id>',methods=['GET'])
+def deleteTarget(id):
+    target = db.get_or_404(Target, id)
+    db.session.delete(target)
+    db.session.commit()
+    return redirect(url_for('targets'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
