@@ -1,0 +1,42 @@
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gettext('Targets')}}</h5>
+                    <div class="counter">
+                        <span>{{target_count}}</span>
+                    </div>
+                    <p class="card-text">{{ gettext('Target refers to a specific segment of the web that you aim to
+                        archive data from, such as a website or a collection of web pages.
+                        a schedule for when the archiving will occur.')}}</p>
+                    <a href="{{url_for('targets')}}" class="btn btn-outline-primary">{{ gettext('View')}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gettext('Running Jobs')}}</h5>
+                    <div class="counter">
+                        <span>0</span>
+                    </div>
+                    <p class="card-text">{{ gettext('Running jobs')}}</p>
+                    <a href="#" class="btn btn-outline-primary">{{ gettext('View')}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gettext('Scheduled Jobs')}}</h5>
+                        <div class="counter">
+                        <span>0</span>
+                    </div>
+                    <p class="card-text">{{ gettext('Pending jobs')}}.</p>
+                    <a href="#" class="btn btn-outline-primary">{{ gettext('View')}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

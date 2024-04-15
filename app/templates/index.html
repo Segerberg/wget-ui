@@ -12,27 +12,15 @@
       </thead>
       <tbody>
       {% for target in targets %}
-        <tr id="row-{{target.id}}">
+        <tr>
           <th scope="row">{{target.id}}</th>
           <td><a href="{{url_for('target', id=target.id)}}">{{target.title}}</a> </td>
           <td>{{target.uri}}</td>
-          <td>
-            <form method="POST" action="{{ url_for('deleteTarget', id=target.id) }}">
-              <button type="submit" class="btn btn-link delete-target">
-                <img src="{{ url_for('static', filename='icons/delete.svg') }}" width="24" height="24" alt="Delete">
-              </button>
-            </form>
-        </td>
         </tr>
       {% endfor %}
       </tbody>
     </table>
-    <button class="btn-sm" id="add-target">Add Target</button>
-    <script>
-      document.getElementById("add-target").addEventListener("click", function() {
-        window.location.href = "{{url_for('addTarget')}}"
-      });
-    </script>
+    <button class="btn-sm">Add Target</button>
   </div>
   <footer class="footer">
     <div class="container text-center">
@@ -40,3 +28,4 @@
     </div>
   </footer>
 {% endblock %}
+{% include 'login.html' %}

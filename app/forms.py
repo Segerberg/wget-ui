@@ -1,11 +1,26 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, RadioField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField
+from wtforms import StringField, RadioField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 
-class RegistrationForm(FlaskForm):
-    email = StringField('E-post')
-    password1 = PasswordField('Lösenord')
-    password2 = PasswordField('Bekräfta lösenord', validators=[DataRequired(), EqualTo('password1')])
-    consent = BooleanField('Samtyck')
+class AddUserForm(FlaskForm):
+    username = StringField('User')
+    password1 = PasswordField('Password')
+    password2 = PasswordField('Confirm password', validators=[DataRequired(), EqualTo('password1')])
 
+class LoginForm(FlaskForm):
+    username = StringField('User')
+    password = PasswordField('Password')
+
+
+class AddTargetForm(FlaskForm):
+    title = StringField('Title')
+    description = TextAreaField('Description')
+
+
+class AddSeedForm(FlaskForm):
+    url = StringField('Url')
+    depth = StringField('Depth')
+    exclude_patterns = StringField('Exclude regex')
+    include_patterns = StringField('Include regex')
+    domains = StringField('Allowed Domains')
