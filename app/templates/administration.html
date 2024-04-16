@@ -11,8 +11,22 @@
         </div>
                 <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">{{ gettext('Crawlers')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#">Add</button></div>
+                <div class="card-header">{{ gettext('Crawlers')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addCrawlerModal">Add</button></div>
                 <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th>Name</th>
+                        <th>Actions</th>
+                        </thead>
+                        <tbody>
+                          {% for crawler in crawlers %}
+                        <tr>
+                            <td>{{crawler.name}}</td>
+                            <td> <a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -26,3 +40,4 @@
     </div>
 </div>
 {% endblock %}
+{% include 'add_crawler_modal.html' %}

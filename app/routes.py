@@ -1,7 +1,7 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
-from app.models import Target, User, Seed
-from app.forms import LoginForm, AddTargetForm, AddSeedForm
+from app.models import Target, User, Seed, Crawler
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm
 from flask_login import current_user, login_user, logout_user, login_required
 
 
@@ -44,7 +44,7 @@ def targetDetail(id):
     return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
 
 
-@app.route('/deletetarget/<id>',methods=['GET'])
+@app.route('/deletetarget/<id>', methods=['GET'])
 def deleteTarget(id):
     target = db.get_or_404(Target, id)
     db.session.delete(target)
@@ -52,9 +52,29 @@ def deleteTarget(id):
     return redirect(url_for('targets'))
 
 
-@app.route('/administration')
+@app.route('/administration', methods=['GET', 'POST'])
 def administration():
-    return render_template('administration.html')
+    addcrawlerform = AddCrawlerForm()
+    if request.method == 'POST':
+        if request.form['type'] == 'addCrawler':
+            if addcrawlerform.validate_on_submit():
+                crawler = Crawler(name=addcrawlerform.name.data,type=addcrawlerform.type.data,
+                                  cmd=addcrawlerform.cmd.data, settings=addcrawlerform.settings.data)
+                db.session.add(crawler)
+                db.session.commit()
+                flash(f"Added Crawler {addcrawlerform.name.data}", "alert-success")
+                return redirect(url_for('administration'))
+
+    crawlers = db.session.query(Crawler).all()
+    return render_template('administration.html',AddCrawlerForm=addcrawlerform, crawlers=crawlers)
+
+@app.route('/deletecrawler/<id>', methods=['GET'])
+def deleteCrawler(id):
+    crawler = db.get_or_404(Crawler, id)
+    db.session.delete(crawler)
+    db.session.commit()
+    flash("Deleted Crawler", "alert-success")
+    return redirect(url_for('administration'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
