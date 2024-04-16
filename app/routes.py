@@ -52,6 +52,11 @@ def deleteTarget(id):
     return redirect(url_for('targets'))
 
 
+@app.route('/administration')
+def administration():
+    return render_template('administration.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
