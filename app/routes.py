@@ -3,7 +3,13 @@ from app import app, db
 from app.models import Target, User, Seed, Crawler
 from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm
 from flask_login import current_user, login_user, logout_user, login_required
+from app.tasks import example_task
 
+@app.route('/example')
+def example():
+    task = example_task.delay()
+    flash(f"Added Job ", "alert-success")
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -62,6 +68,7 @@ def administration():
                                   cmd=addcrawlerform.cmd.data, settings=addcrawlerform.settings.data)
                 db.session.add(crawler)
                 db.session.commit()
+
                 flash(f"Added Crawler {addcrawlerform.name.data}", "alert-success")
                 return redirect(url_for('administration'))
 
