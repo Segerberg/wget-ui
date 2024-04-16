@@ -1,9 +1,15 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
-from app.models import Target, User, Seed
-from app.forms import LoginForm, AddTargetForm, AddSeedForm
+from app.models import Target, User, Seed, Crawler, ContentOwner
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm
 from flask_login import current_user, login_user, logout_user, login_required
+from app.tasks import example_task
 
+@app.route('/example')
+def example():
+    task = example_task.delay()
+    flash(f"Added Job ", "alert-success")
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -44,12 +50,60 @@ def targetDetail(id):
     return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
 
 
-@app.route('/deletetarget/<id>',methods=['GET'])
+@app.route('/deletetarget/<id>', methods=['GET'])
 def deleteTarget(id):
     target = db.get_or_404(Target, id)
     db.session.delete(target)
     db.session.commit()
     return redirect(url_for('targets'))
+
+
+@app.route('/administration', methods=['GET', 'POST'])
+def administration():
+    addcrawlerform = AddCrawlerForm()
+    adduserform = AddUserForm()
+
+    if request.method == 'POST':
+        if request.form['type'] == 'addCrawler':
+            if addcrawlerform.validate_on_submit():
+                crawler = Crawler(name=addcrawlerform.name.data,type=addcrawlerform.type.data,
+                                  cmd=addcrawlerform.cmd.data, settings=addcrawlerform.settings.data)
+                db.session.add(crawler)
+                db.session.commit()
+
+                flash(f"Added Crawler {addcrawlerform.name.data}", "alert-success")
+                return redirect(url_for('administration'))
+
+        elif request.form['type'] == 'addUser':
+            if adduserform.validate_on_submit():
+                user = User(username=adduserform.username.data)
+                user.set_password(adduserform.password1.data)
+                db.session.add(user)
+                db.session.commit()
+
+                flash(f"Added User {adduserform.username.data}", "alert-success")
+                return redirect(url_for('administration'))
+            
+    crawlers = db.session.query(Crawler).all()
+    users = db.session.query(User).all()
+
+    return render_template('administration.html',AddCrawlerForm=addcrawlerform, AddUserForm=adduserform, crawlers=crawlers, users=users)
+
+@app.route('/deleteuser/<id>', methods=['GET'])
+def deleteUser(id):
+    user = db.get_or_404(User, id)
+    db.session.delete(user)
+    db.session.commit()
+    flash("Deleted User", "alert-success")
+    return redirect(url_for('administration'))
+
+@app.route('/deletecrawler/<id>', methods=['GET'])
+def deleteCrawler(id):
+    crawler = db.get_or_404(Crawler, id)
+    db.session.delete(crawler)
+    db.session.commit()
+    flash("Deleted Crawler", "alert-success")
+    return redirect(url_for('administration'))
 
 
 @app.route('/login', methods=['GET', 'POST'])

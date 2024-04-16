@@ -1,0 +1,36 @@
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">{{ gettext('Add User')}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Form for adding a new user -->
+            <form method='POST' action="{{url_for('administration')}}">
+                {{ AddUserForm.csrf_token }}
+                <input type="hidden" name="type" value="addUser">
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-gradient-primary-to-secondary"><i class="bi bi-person text-white"></i></span>
+                    {{ AddUserForm.username(class_="form-control", placeholder="Username")}}
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-gradient-primary-to-secondary"><i class="bi bi-lock text-white"></i></span>
+                    {{ AddUserForm.password1(class_="form-control", placeholder="Password")}}
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text bg-gradient-primary-to-secondary"><i class="bi bi-lock text-white"></i></span>
+                  {{ AddUserForm.password2(class_="form-control", placeholder="confirm password")}}
+              </div>
+                
+                <div class="d-grid col-12 mx-auto">
+                    <button class="btn btn-outline-secondary" type="submit">{{ gettext('Add')}}</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
