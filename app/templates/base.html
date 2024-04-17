@@ -41,7 +41,9 @@
 
 {% endblock%}
 <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-  <footer class="footer">
+<script src="{{url_for('static', filename='js/htmx.min.js')}}"></script>
+
+<footer class="footer">
     <div class="container text-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}

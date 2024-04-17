@@ -161,3 +161,4 @@ cython_debug/
 #.idea/
 /.flaskenv
 /data/app.db
+/wgetvenv/

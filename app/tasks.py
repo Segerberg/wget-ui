@@ -1,4 +1,3 @@
-
 # Celery tasks goes here
 
 # CreateSIP

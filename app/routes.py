@@ -1,13 +1,13 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
-from app.models import Target, User, Seed, Crawler, ContentOwner
-from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm
+from app.models import Target, User, Seed, Crawler, Job
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddJobForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import example_task
+from app.tasks import example_task, wget
 
 @app.route('/example')
 def example():
-    task = example_task.delay()
+    task = wget.delay("https://climr.org")
     flash(f"Added Job ", "alert-success")
     return redirect(url_for('index'))
 
@@ -34,6 +34,9 @@ def targets():
 @app.route('/targets/<id>',methods=['GET', 'POST'])
 def targetDetail(id):
     addseedform = AddSeedForm()
+    addjobform = AddJobForm()
+    crawlers = db.session.query(Crawler).all()
+    addjobform.crawler.choices = [(crawler.id, crawler.name) for crawler in crawlers]
     if request.method == 'POST':
         if request.form['type'] == 'addSeed':
             if addseedform.validate_on_submit():
@@ -43,11 +46,19 @@ def targetDetail(id):
                             target_id=id)
                 db.session.add(seed)
                 db.session.commit()
+                flash(f"Added seed {addseedform.url.data}", "alert-success")
                 return redirect(url_for('targetDetail',id=id))
+        if request.form['type'] == 'addJob':
+            job = Job(target_id=id, crawler_id=addjobform.crawler.data)
+            db.session.add(job)
+            db.session.commit()
+            flash(f"Added job", "alert-success")
+            return redirect(url_for('targetDetail', id=id))
 
     target = db.get_or_404(Target, id)
     seeds = Seed.query.filter_by(target_id=id).all()
-    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
+    jobs = Job.query.filter_by(target_id=id).all()
+    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, AddJobForm=addjobform, seeds=seeds, jobs=jobs)
 
 
 @app.route('/deletetarget/<id>', methods=['GET'])
@@ -61,8 +72,6 @@ def deleteTarget(id):
 @app.route('/administration', methods=['GET', 'POST'])
 def administration():
     addcrawlerform = AddCrawlerForm()
-    adduserform = AddUserForm()
-
     if request.method == 'POST':
         if request.form['type'] == 'addCrawler':
             if addcrawlerform.validate_on_submit():
@@ -74,28 +83,8 @@ def administration():
                 flash(f"Added Crawler {addcrawlerform.name.data}", "alert-success")
                 return redirect(url_for('administration'))
 
-        elif request.form['type'] == 'addUser':
-            if adduserform.validate_on_submit():
-                user = User(username=adduserform.username.data)
-                user.set_password(adduserform.password1.data)
-                db.session.add(user)
-                db.session.commit()
-
-                flash(f"Added User {adduserform.username.data}", "alert-success")
-                return redirect(url_for('administration'))
-            
     crawlers = db.session.query(Crawler).all()
-    users = db.session.query(User).all()
-
-    return render_template('administration.html',AddCrawlerForm=addcrawlerform, AddUserForm=adduserform, crawlers=crawlers, users=users)
-
-@app.route('/deleteuser/<id>', methods=['GET'])
-def deleteUser(id):
-    user = db.get_or_404(User, id)
-    db.session.delete(user)
-    db.session.commit()
-    flash("Deleted User", "alert-success")
-    return redirect(url_for('administration'))
+    return render_template('administration.html',AddCrawlerForm=addcrawlerform, crawlers=crawlers)
 
 @app.route('/deletecrawler/<id>', methods=['GET'])
 def deleteCrawler(id):

@@ -5,7 +5,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">{{ gettext('#')}}</th>
           <th scope="col">{{ gettext('Title')}}</th>
           <th scope="col">{{ gettext('Description')}}</th>
         </tr>
@@ -14,8 +13,7 @@
       {% for target in targets %}
       {% if target.user_id == current_user.id %}
         <tr>
-            <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.id}}</a></th>
-          <td><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </td>
+          <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </th>
           <td>{{target.description}}</td>
         </tr>
       {% endif %}
@@ -29,7 +27,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">{{ gettext('#')}}</th>
           <th scope="col">{{ gettext('Title')}}</th>
           <th scope="col">{{ gettext('Description')}}</th>
           <th scope="col">{{ gettext('Responsible')}}</th>
@@ -39,8 +36,7 @@
       {% for target in targets %}
       {% if target.user_id != current_user.id %}
         <tr>
-            <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.id}}</a></th>
-          <td><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </td>
+          <th scope="row"><a href="{{url_for('targetDetail', id=target.id)}}">{{target.title}}</a> </th>
           <td>{{target.description}}</td>
            <td>{{target.user_id}}</td>
         </tr>

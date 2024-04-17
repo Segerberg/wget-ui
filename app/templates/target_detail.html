@@ -58,6 +58,7 @@
             <div class="card">
                 <div class="card-header">{{ gettext('Actions')}}</div>
                 <div class="card-body">
+
                     <a href="{{url_for('deleteTarget', id=target.id)}}" class="btn btn-outline-danger">Delete</a>
                 </div>
             </div>
@@ -66,14 +67,43 @@
     <div class="row">
         <div class="col-lg-12">
                   <div class="card">
-                <div class="card-header">{{ gettext('Jobs')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addSeedModal">Add</button></div>
-                <div class="card-body">
 
+
+                <div class="card-header">{{ gettext('Jobs')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addJobModal">Add</button></div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th>#</th>
+                        <th>Status</th>
+                        <th>Started</th>
+                        <th>Ended</th>
+                        <th>Result</th>
+                        <th>QA</th>
+                        </thead>
+                        <tbody>
+                          {% for job in jobs %}
+                          {% if job.startDateTime %}
+                        <tr>
+                            <td>{{job.id}}</td>
+
+                            <td>{{job.startDateTime}}</td>
+                            <td>{{job.EndDateTime}}</td>
+                            <td>{{job.result}}</td>
+                            <td>{{job.QA}}</td>
+                            {% else %}
+                            <td>{{job.id}}</td>
+                            <td colspan="5"><span class="badge rounded-pill bg-secondary">Not started</span></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
         </div>
-
     </div>
+</div>
 </div>
 
 {% endblock %}
 {% include 'add_seed_modal.html' %}
+{% include 'add_job_modal.html' %}
