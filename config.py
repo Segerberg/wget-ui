@@ -13,6 +13,8 @@ class Config(object):
         'sv': 'Swedish'
     }
 
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL') or 'redis://:redispw@localhost:6379/0'
+    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND') or 'redis://:redispw@localhost:6379/0'
     #MAIL_SERVER = os.environ.get('MAIL_SERVER')
     #MAIL_PORT = os.environ.get('MAIL_PORT')
     #MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS')
