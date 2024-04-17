@@ -19,7 +19,6 @@ class AddCrawlerForm(FlaskForm):
     cmd = StringField('Command')
     settings = TextAreaField('Settings')
 
-
 class AddTargetForm(FlaskForm):
     title = StringField('Title')
     description = TextAreaField('Description')

@@ -38,6 +38,7 @@ def targetDetail(id):
     crawlers = db.session.query(Crawler).all()
     addjobform.crawler.choices = [(crawler.id, crawler.name) for crawler in crawlers]
     if request.method == 'POST':
+        print(request)
         if request.form['type'] == 'addSeed':
             if addseedform.validate_on_submit():
                 seed = Seed(url=addseedform.url.data, depth=addseedform.depth.data,
@@ -67,6 +68,14 @@ def deleteTarget(id):
     db.session.delete(target)
     db.session.commit()
     return redirect(url_for('targets'))
+
+@app.route('/deletejob/<id>', methods=['GET'])
+def deleteJob(id):
+    job = db.get_or_404(Job, id)
+    target_id = job.target_id
+    db.session.delete(job)
+    db.session.commit()
+    return redirect(url_for('targetDetail', id=target_id))
 
 
 @app.route('/administration', methods=['GET', 'POST'])

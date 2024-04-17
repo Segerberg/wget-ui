@@ -73,27 +73,28 @@
                 <div class="card-body">
                     <table class="table">
                         <thead>
-                        <th>#</th>
-                        <th>Status</th>
-                        <th>Started</th>
-                        <th>Ended</th>
-                        <th>Result</th>
-                        <th>QA</th>
+                        <th>{{ gettext('#')}}</th>
+                        <th>{{ gettext('Status')}}</th>
+                        <th>{{ gettext('Started')}}</th>
+                        <th>{{ gettext('Ended')}}</th>
+                        <th>{{ gettext('Result')}}</th>
+                        <th>{{ gettext('QA')}}</th>
+                        <th>{{ gettext('Actions')}}</th>
                         </thead>
                         <tbody>
                           {% for job in jobs %}
                           {% if job.startDateTime %}
                         <tr>
                             <td>{{job.id}}</td>
-
                             <td>{{job.startDateTime}}</td>
                             <td>{{job.EndDateTime}}</td>
                             <td>{{job.result}}</td>
                             <td>{{job.QA}}</td>
                             {% else %}
                             <td>{{job.id}}</td>
-                            <td colspan="5"><span class="badge rounded-pill bg-secondary">Not started</span></td>
+                            <td colspan="5"><span class="badge rounded-pill bg-secondary">{{ gettext('Not started')}}</span></td>
                             {% endif %}
+                            <td><button class="btn btn-sm btn-outline-success" style="margin-right: 5px">{{ gettext('Start')}}</button><a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
                         </tr>
                         {% endfor %}
                         </tbody>
