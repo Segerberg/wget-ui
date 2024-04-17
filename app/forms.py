@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo
+from app.models import Crawler
 
 
 class AddUserForm(FlaskForm):
@@ -30,3 +31,7 @@ class AddSeedForm(FlaskForm):
     exclude_patterns = StringField('Exclude regex')
     include_patterns = StringField('Include regex')
     domains = StringField('Allowed Domains')
+
+
+class AddJobForm(FlaskForm):
+    crawler = SelectField('Crawler')

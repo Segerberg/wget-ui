@@ -50,8 +50,7 @@ class Crawler(db.Model):
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    storagepath = db.Column(db.String(100))
-    resultOutcome = db.Column(db.String(100))
+    task_id = db.Column(db.String(100))
     stats = db.Column(db.String(100))
     QA = db.Column(db.String(100))
     schedule = db.Column(db.String(100))

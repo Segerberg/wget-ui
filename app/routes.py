@@ -1,13 +1,13 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
-from app.models import Target, User, Seed, Crawler
-from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm
+from app.models import Target, User, Seed, Crawler, Job
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddJobForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import example_task
+from app.tasks import example_task, wget
 
 @app.route('/example')
 def example():
-    task = example_task.delay()
+    task = wget.delay("https://climr.org")
     flash(f"Added Job ", "alert-success")
     return redirect(url_for('index'))
 
@@ -34,6 +34,9 @@ def targets():
 @app.route('/targets/<id>',methods=['GET', 'POST'])
 def targetDetail(id):
     addseedform = AddSeedForm()
+    addjobform = AddJobForm()
+    crawlers = db.session.query(Crawler).all()
+    addjobform.crawler.choices = [(crawler.id, crawler.name) for crawler in crawlers]
     if request.method == 'POST':
         if request.form['type'] == 'addSeed':
             if addseedform.validate_on_submit():
@@ -43,11 +46,19 @@ def targetDetail(id):
                             target_id=id)
                 db.session.add(seed)
                 db.session.commit()
+                flash(f"Added seed {addseedform.url.data}", "alert-success")
                 return redirect(url_for('targetDetail',id=id))
+        if request.form['type'] == 'addJob':
+            job = Job(target_id=id, crawler_id=addjobform.crawler.data)
+            db.session.add(job)
+            db.session.commit()
+            flash(f"Added job", "alert-success")
+            return redirect(url_for('targetDetail', id=id))
 
     target = db.get_or_404(Target, id)
     seeds = Seed.query.filter_by(target_id=id).all()
-    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
+    jobs = Job.query.filter_by(target_id=id).all()
+    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, AddJobForm=addjobform, seeds=seeds, jobs=jobs)
 
 
 @app.route('/deletetarget/<id>', methods=['GET'])
