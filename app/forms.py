@@ -36,3 +36,7 @@ class AddSeedForm(FlaskForm):
 
 class AddJobForm(FlaskForm):
     crawler = SelectField('Crawler')
+
+class AddContentOwnerForm(FlaskForm):
+    content = StringField('content')
+    owner = StringField('Owner name')

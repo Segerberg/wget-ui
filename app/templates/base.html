@@ -12,7 +12,7 @@
   <div class="container">
     <a class="navbar-brand" href="{{url_for('index')}}">{{ gettext('GU-WEBARCHIVING')}}</a>
     <div class="ml-auto">
-          {% if current_user.is_authenticated %}
+          {% if current_user.is_authenticated and current_user.is_admin %}
       <ul class="navbar-nav">
           <li class="nav-item">
           <a class="nav-link" href="{{url_for('targets')}}">{{ gettext('Targets')}}</a>
@@ -24,6 +24,15 @@
           <a class="nav-link" href="{{url_for('logout')}}">{{ gettext('Logout')}}</a>
         </li>
       </ul>
+      {% elif current_user.is_authenticated %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('targets')}}">{{ gettext('Targets')}}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('logout')}}">{{ gettext('Logout')}}</a>
+      </li>
+    </ul>
         {% else %}
         <ul class="navbar-nav">
            <li class="nav-item">
