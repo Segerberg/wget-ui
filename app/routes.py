@@ -3,13 +3,17 @@ from app import app, db
 from app.models import Target, User, Seed, Crawler, Job
 from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddJobForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import example_task, wget
+from app.tasks import wget
 
-@app.route('/example')
-def example():
-    task = wget.delay("https://climr.org")
-    flash(f"Added Job ", "alert-success")
-    return redirect(url_for('index'))
+
+@app.route('/crawl/<id>')
+def crawl(id):
+    job = db.get_or_404(Job, id)
+    task = wget.delay(id)
+    job.task_id = task.id
+    db.session.commit()
+    flash(f"Started crawl", "alert-success")
+    return redirect(url_for('targetDetail',id=job.target_id))
 
 @app.route('/')
 def index():
@@ -74,6 +78,14 @@ def deleteJob(id):
     job = db.get_or_404(Job, id)
     target_id = job.target_id
     db.session.delete(job)
+    db.session.commit()
+    return redirect(url_for('targetDetail', id=target_id))
+
+@app.route('/deleteseed/<id>', methods=['GET'])
+def deleteSeed(id):
+    seed = db.get_or_404(Seed, id)
+    target_id = seed.target_id
+    db.session.delete(seed)
     db.session.commit()
     return redirect(url_for('targetDetail', id=target_id))
 

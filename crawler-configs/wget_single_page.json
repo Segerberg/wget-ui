@@ -1,0 +1,17 @@
+{
+  "profile_name": "wget_single_page",
+  "crawler": {
+    "cmd": "wget",
+    "settings": [
+      "--execute",
+      "robots=off",
+      "--no-directories",
+      "-nv",
+      "--delete-after",
+      "--no-parent",
+      "--span-hosts",
+      "--page-requisites",
+      "--recursive",
+      "--warc-file=test"]
+  }
+}
