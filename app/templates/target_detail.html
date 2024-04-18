@@ -37,20 +37,20 @@
                 <div class="card-body">
                     <table class="table">
                         <thead>
-                        <th>Url</th>
-                        <th>Depth</th>
+                        <th>{{ gettext('Url')}}</th>
+                        <th>{{ gettext('Depth')}}</th>
+                        <th>{{ gettext('Actions')}}</th>
                         </thead>
                         <tbody>
                           {% for seed in seeds %}
                         <tr>
                             <td>{{seed.url}}</td>
                             <td>{{seed.depth}}</td>
+                            <td><a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteSeed', id=seed.id)}}">{{ gettext('Delete')}}</a></td>
                         </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>
@@ -86,16 +86,24 @@
                           {% if job.startDateTime %}
                         <tr>
                             <td>{{job.id}}</td>
+                            <td>{% if not job.EndDateTime %}
+                                <span class="badge rounded-pill bg-warning">{{ gettext('Running')}}</span>{% else %}
+                                <span class="badge rounded-pill bg-secondary">{{ gettext('Finished')}}</span>  {% endif %}
+                            </td>
                             <td>{{job.startDateTime}}</td>
                             <td>{{job.EndDateTime}}</td>
                             <td>{{job.result}}</td>
                             <td>{{job.QA}}</td>
+                           <td>{% if job.task_id %}<a class="btn btn-sm btn-outline-success" disabled style="margin-right: 5px" href="{{url_for('crawl', id=job.id)}}">{{ gettext('Start')}}</a>{%endif%} <a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
+
+                            </tr>
                             {% else %}
+                          <tr>
                             <td>{{job.id}}</td>
-                            <td colspan="5"><span class="badge rounded-pill bg-secondary">{{ gettext('Not started')}}</span></td>
+                            <td colspan="5"><span class="badge rounded-pill bg-secondary">{{ gettext('Pending')}}</span></td>
+                            <td><a class="btn btn-sm btn-outline-success" style="margin-right: 5px" href="{{url_for('crawl', id=job.id)}}">{{ gettext('Start')}}</a> <a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
                             {% endif %}
-                            <td><button class="btn btn-sm btn-outline-success" style="margin-right: 5px">{{ gettext('Start')}}</button><a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
-                        </tr>
+                           </tr>
                         {% endfor %}
                         </tbody>
                     </table>
