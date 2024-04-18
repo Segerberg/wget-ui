@@ -56,7 +56,7 @@
                         <tbody>
                           {% for owner in owners %}
                         <tr>
-                            <td>{{owner.name}}</td>
+                            <td>{{owner.owner}}</td>
                             <td> <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
                         </tr>
                         {% endfor %}

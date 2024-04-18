@@ -99,7 +99,7 @@ def administration():
         elif request.form['type'] == 'addContentOwner':
             if addcontentownerform.validate_on_submit():
                 content_owner = ContentOwner(owner=addcontentownerform.owner.data, 
-                                             content=addcontentownerform.content.data)
+                                             reference_code=addcontentownerform.reference_code.data)
                 db.session.add(content_owner)
                 db.session.commit()
                 flash(f"Added Owner {addcontentownerform.owner.data}", "alert-success")
@@ -136,6 +136,15 @@ def deleteJob(id):
     db.session.delete(job)
     db.session.commit()
     return redirect(url_for('targetDetail', id=target_id))
+
+@app.route('/deleteowner/<id>', methods=['GET'])
+def deleteOwner(id):
+    owner = db.get_or_404(ContentOwner, id)
+    target_id = owner.target_id
+    db.session.delete(owner)
+    db.session.commit()
+    return redirect(url_for('administration', id=target_id))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

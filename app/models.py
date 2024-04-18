@@ -66,8 +66,8 @@ class Job(db.Model):
 
 
 class ContentOwner(db.Model):
-    id = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String(128), index=True)
+    id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
+    owner = db.Column(db.String(128), index=True)
     reference_code = db.Column(db.String(128), index=True)
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
     def __repr__(self):
