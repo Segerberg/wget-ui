@@ -36,6 +36,7 @@
                           {% for crawler in crawlers %}
                         <tr>
                             <td>{{crawler.name}}</td>
+                            <td>{{crawler.type}}</td>
                             <td> <a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
                         </tr>
                         {% endfor %}
@@ -51,12 +52,14 @@
                     <table class="table">
                         <thead>
                         <th>Name</th>
-                        <th>Content</th>
+                        <th>Ref Code</th>
                         </thead>
                         <tbody>
                           {% for owner in owners %}
                         <tr>
                             <td>{{owner.owner}}</td>
+                            <td>{{owner.reference_code}}</td>
+                            <td> <button class="btn btn-outline-primary btn-sm float-end" href="#" data-bs-toggle="modal" data-bs-target="#editOwnermodal">Edit</button></div></td>
                             <td> <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
                         </tr>
                         {% endfor %}
@@ -71,3 +74,4 @@
 {% include 'add_user_modal.html' %}
 {% include 'add_crawler_modal.html' %}
 {% include 'add_content_owner.html' %}
+{% include 'edit_owner_modal.html' %}
