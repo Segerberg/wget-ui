@@ -41,3 +41,6 @@ class AddContentOwnerForm(FlaskForm):
     owner = StringField('Owner name')
     reference_code = StringField('reference code')
     
+class EditContentOwnerForm(AddContentOwnerForm):
+    owner = StringField('Owner name')
+    reference_code = StringField('reference code')

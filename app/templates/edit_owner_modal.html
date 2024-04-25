@@ -1,17 +1,15 @@
-<div class="modal fade" id="editOwnerModal" tabindex="-1" aria-labelledby="editOwnerModalLabel" aria-hidden="true">
+{% for owner in owners %}
+<div class="modal fade" id="editOwnerModal{{ owner.id }}" tabindex="-1" aria-labelledby="editOwnerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            {% for owner in owners %}
             <div class="modal-header">
                 <h5 class="modal-title" id="editOwnerModalLabel">{{ gettext('Edit Owner')}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-           
             <div class="modal-body">
-                <form method='POST' action="{{ url_for('administration') }}">
+                <form method='POST' action="{{url_for('editOwner', id=owner.id)}}">
                     {{ AddContentOwnerForm.csrf_token }}
                     <input type="hidden" name="type" value="editOwner">
-                    <input type="hidden" name="id" value="{{owner.id}}">
                     
                     <div class="input-group mb-3">
                         <span class="input-group-text">{{ gettext('Name')}}</span>
@@ -23,7 +21,7 @@
                     </div>
                     
                     <div class="d-grid col-12 mx-auto">
-                        <button href=# class="btn btn-outline-secondary" type="submit">{{ gettext('Update')}}</button>
+                        <button class="btn btn-outline-secondary" type="submit">{{ gettext('Save')}}</button>
                     </div>
                 </form>
             </div>
@@ -31,7 +29,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
             </div>
-            {% endfor %}
         </div>
     </div>
 </div>
+{% endfor %}

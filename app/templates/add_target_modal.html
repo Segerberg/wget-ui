@@ -6,22 +6,22 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-                            <form method='POST' action="{{url_for('targets')}}">
-                                {{ AddTargetForm.csrf_token }}
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-gradient-primary-to-secondary"><i
-                                            class="bi bi-envelope text-white"></i></span>
-                                    {{ AddTargetForm.title(class_="form-control", placeholder_="Title")}}
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-gradient-primary-to-secondary"><i
-                                            class="bi bi-key-fill text-white"></i></span>
-                                    {{ AddTargetForm.description(class_="form-control", placeholder_="Description")}}
-                                </div>
-                                <div class="d-grid col-12 mx-auto">
-                                    <button class="btn btn-outline-secondary"  type="submit"><span></span>{{ gettext('Add')}} </button>
-                                </div>
-                            </form>
+        <form method='POST' action="{{url_for('targets')}}">
+            {{ AddTargetForm.csrf_token }}
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        class="bi bi-envelope text-white"></i></span>
+                {{ AddTargetForm.title(class_="form-control", placeholder_="Title")}}
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        class="bi bi-key-fill text-white"></i></span>
+                {{ AddTargetForm.description(class_="form-control", placeholder_="Description")}}
+            </div>
+            <div class="d-grid col-12 mx-auto">
+                <button class="btn btn-outline-secondary"  type="submit"><span></span>{{ gettext('Add')}} </button>
+            </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>

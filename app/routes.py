@@ -1,7 +1,7 @@
 from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
 from app import app, db
 from app.models import Target, User, Seed, Crawler, ContentOwner, Job
-from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm, EditContentOwnerForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.tasks import example_task
 from datetime import datetime
@@ -66,6 +66,7 @@ def administration():
     adduserform = AddUserForm()
     addjobform = AddJobForm()
     addcontentownerform = AddContentOwnerForm()
+    editcontentownerform = EditContentOwnerForm()
 
     if request.method == 'POST':
         if request.form['type'] == 'addCrawler':
@@ -80,12 +81,12 @@ def administration():
 
         elif request.form['type'] == 'addUser':
             if adduserform.validate_on_submit():
-                user = User(username=adduserform.username.data, password1=adduserform.password1.data, 
-                            password2=adduserform.password2.data)
+                
+                user = User(username=adduserform.username.data)
                 user.set_password(adduserform.password1.data)
+                user.check_password(adduserform.password2.data)
                 db.session.add(user)
                 db.session.commit()
-
                 flash(f"Added User '{adduserform.username.data}'", "alert-success")
                 return redirect(url_for('administration'))
             
@@ -105,24 +106,23 @@ def administration():
                 db.session.commit()
                 flash(f"Added Owner '{addcontentownerform.owner.data}'", "alert-success")
                 return redirect(url_for('administration'))
-            
-        elif request.form['type'] == 'editOwner':
-            owner_id = request.form.get('id')
-            content_owner = ContentOwner.query.get_or_404(owner_id)
-            content_owner.owner = request.form.get('owner')
-            content_owner.reference_code = request.form.get('reference_code')
-            db.session.commit()
-            flash(f"Updated Owner '{content_owner.owner}'", "alert-success")
-            
-            return redirect(url_for('administration'))
-                        
-            
+        
+        elif request.form['type'] == 'editOwner': 
+            if editcontentownerform.validate_on_submit():
+                id = request.form.get('id')
+                owner = ContentOwner.query.get_or_404(id)
+                owner.owner = request.form['owner']
+                owner.reference_code = request.form['reference_code']
+                db.session.commit()
+                return redirect(url_for('administration'))
+                    
+        
     crawlers = db.session.query(Crawler).all()
     users = db.session.query(User).all()
     jobs = db.session.query(Job).all()
     owners = db.session.query(ContentOwner).all()
-
-    return render_template('administration.html',AddCrawlerForm=addcrawlerform, AddUserForm=adduserform, AddJobForm=addjobform, AddContentOwnerForm=addcontentownerform, crawlers=crawlers, users=users, jobs=jobs, owners=owners)
+    owner = db.session.query(ContentOwner)
+    return render_template('administration.html',AddCrawlerForm=addcrawlerform, EditContentOwnerForm=editcontentownerform, AddUserForm=adduserform, AddJobForm=addjobform, AddContentOwnerForm=addcontentownerform, crawlers=crawlers, users=users, jobs=jobs, owners=owners, owner=owner)
 
 @app.route('/deleteuser/<id>', methods=['GET'])
 def deleteUser(id):
@@ -137,7 +137,7 @@ def deleteCrawler(id):
     crawler = db.get_or_404(Crawler, id)
     db.session.delete(crawler)
     db.session.commit()
-    flash("Deleted Crawler", "alert-success")
+    flash("Deleted Crawler {{crawler}}", "alert-success")
     return redirect(url_for('administration'))
 
 @app.route('/deletejob/<id>', methods=['GET'])
@@ -156,26 +156,19 @@ def deleteOwner(id):
     db.session.commit()
     return redirect(url_for('administration', id=target_id))
 
-# @app.route('/editOwner/<id>', methods=['GET'])
-# def editOwner(id):
-#     owner = db.get_or_404(ContentOwner, id)
-#     form = AddContentOwnerForm() 
-#     if form.validate_on_submit():
-#         form.populate_obj(owner)
-#         db.session.commit()
-#         flash('Owner details updated successfully.', 'success')
-#         return redirect(url_for('administration')) 
-#     return render_template('administration.html', form=form)
+@app.route('/editowner/<id>', methods=['GET', 'POST'])
+def editOwner(id):
+    print('inside editowner routes')
+    owner = ContentOwner.query.get_or_404(str(id))
+    form = AddContentOwnerForm(request.form, obj=owner)
+    if request.method == 'POST':
+        if form.validate():
+            form.populate_obj(owner)
+            db.session.commit()
+            flash(f"{owner.owner} updated!")
+            return redirect(url_for('administration'))
+    return render_template('edit_owner_modal.html', form=form, owner=owner, id=id)
 
-# @app.route('/editOwner/<id>', methods=['POST'])
-# def editOwner():
-#     owner_id = request.form.get('id')
-#     owner = ContentOwner.query.get_or_404(owner_id)
-#     owner.owner = request.form.get('owner')
-#     owner.reference_code = request.form.get('reference_code')
-#     db.session.commit()
-#     flash('Owner details updated successfully.', 'success')
-#     return redirect(url_for('administration'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

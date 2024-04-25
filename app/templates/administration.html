@@ -55,14 +55,15 @@
                         <th>Ref Code</th>
                         </thead>
                         <tbody>
-                          {% for owner in owners %}
+                        {% for owner in owners %}
                         <tr>
                             <td>{{owner.owner}}</td>
                             <td>{{owner.reference_code}}</td>
-                            <td> <button class="btn btn-outline-primary btn-sm float-end" href="#" data-bs-toggle="modal" data-bs-target="#editOwnermodal">Edit</button></div></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end" data-id="{{ owner.id }}" data-owner="{{ owner.owner }}" 
+                                data-reference-code="{{ owner.reference_code }}" data-bs-toggle="modal" data-bs-target="#editOwnerModal{{ owner.id }}">Edit</button></td>
                             <td> <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
                         </tr>
-                        {% endfor %}
+                        {% endfor %} 
                         </tbody>
                     </table>
                 </div>
