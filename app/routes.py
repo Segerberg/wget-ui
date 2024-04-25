@@ -3,15 +3,17 @@ from app import app, db
 from app.models import Target, User, Seed, Crawler, ContentOwner, Job
 from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm, EditContentOwnerForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import example_task
-from datetime import datetime
+from app.tasks import wget
 
-@app.route('/example')
-def example():
-    #task = wget.delay("https://climr.org")
-    task = example_task()
-    flash(f"Added Job ", "alert-success")
-    return redirect(url_for('index'))
+
+@app.route('/crawl/<id>')
+def crawl(id):
+    job = db.get_or_404(Job, id)
+    task = wget.delay(id)
+    job.task_id = task.id
+    db.session.commit()
+    flash(f"Started crawl", "alert-success")
+    return redirect(url_for('targetDetail',id=job.target_id))
 
 @app.route('/')
 def index():
@@ -24,11 +26,18 @@ def index():
 @app.route('/targets', methods=['GET', 'POST'])
 def targets():
     addtargetform = AddTargetForm()
-    if addtargetform.validate_on_submit():
-        target = Target(title=addtargetform.title.data, description=addtargetform.description.data, user_id=current_user.id)
-        db.session.add(target)
-        db.session.commit()
-        return redirect(url_for('targets'))
+    if request.method == 'POST':
+        if request.form['type'] == 'addTarget':
+            if addtargetform.validate_on_submit():
+                target = Target(title=addtargetform.title.data, description=addtargetform.description.data, user_id=current_user.id)
+                db.session.add(target)
+                db.session.commit()
+                return redirect(url_for('targets'))
+        elif request.form['type'] == 'editTarget':
+            if addtargetform.validate_on_submit():
+                id = request.form.get('id')
+                db.session.commit()
+                return redirect(url_for('targets'))
     targets = db.session.query(Target).all()
     return render_template('targets.html', targets=targets, AddTargetForm=addtargetform, User=User)
 
@@ -36,7 +45,9 @@ def targets():
 @app.route('/targets/<id>',methods=['GET', 'POST'])
 def targetDetail(id):
     addseedform = AddSeedForm()
+    
     if request.method == 'POST':
+        print(request)
         if request.form['type'] == 'addSeed':
             if addseedform.validate_on_submit():
                 seed = Seed(url=addseedform.url.data, depth=addseedform.depth.data,
@@ -49,7 +60,7 @@ def targetDetail(id):
 
     target = db.get_or_404(Target, id)
     seeds = Seed.query.filter_by(target_id=id).all()
-    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, seeds=seeds)
+    return render_template('target_detail.html', target=target, AddAddSeedForm=addseedform, seeds=seeds)
 
 
 @app.route('/deletetarget/<id>', methods=['GET'])
@@ -59,6 +70,22 @@ def deleteTarget(id):
     db.session.commit()
     return redirect(url_for('targets'))
 
+@app.route('/deletejob/<id>', methods=['GET'])
+def deleteJob(id):
+    job = db.get_or_404(Job, id)
+    target_id = job.target_id
+    db.session.delete(job)
+    db.session.commit()
+    return redirect(url_for('targetDetail', id=target_id))
+
+@app.route('/deleteseed/<id>', methods=['GET'])
+def deleteSeed(id):
+    seed = db.get_or_404(Seed, id)
+    target_id = seed.target_id
+    db.session.delete(seed)
+    db.session.commit()
+    return redirect(url_for('targetDetail', id=target_id))
+
 
 @app.route('/administration', methods=['GET', 'POST'])
 def administration():
@@ -66,12 +93,11 @@ def administration():
     adduserform = AddUserForm()
     addjobform = AddJobForm()
     addcontentownerform = AddContentOwnerForm()
-    editcontentownerform = EditContentOwnerForm()
 
     if request.method == 'POST':
         if request.form['type'] == 'addCrawler':
             if addcrawlerform.validate_on_submit():
-                crawler = Crawler(name=addcrawlerform.name.data,type=addcrawlerform.type.data,
+                crawler = Crawler(name=addcrawlerform.name.data,crawler_type=addcrawlerform.crawler_type.data,
                                   cmd=addcrawlerform.cmd.data, settings=addcrawlerform.settings.data)
                 db.session.add(crawler)
                 db.session.commit()
@@ -108,21 +134,28 @@ def administration():
                 return redirect(url_for('administration'))
         
         elif request.form['type'] == 'editOwner': 
-            if editcontentownerform.validate_on_submit():
+            if addcontentownerform.validate_on_submit():
                 id = request.form.get('id')
-                owner = ContentOwner.query.get_or_404(id)
-                owner.owner = request.form['owner']
-                owner.reference_code = request.form['reference_code']
                 db.session.commit()
                 return redirect(url_for('administration'))
                     
+        elif request.form['type'] == 'editUser': 
+            if adduserform.validate_on_submit():
+                id = request.form.get('id') 
+                db.session.commit()
+                return redirect(url_for('administration'))
         
+        elif request.form['type'] == 'editCrawler': 
+            if addcrawlerform.validate_on_submit():
+                id = request.form.get('id')
+                db.session.commit()
+                return redirect(url_for('administration'))
+            
     crawlers = db.session.query(Crawler).all()
     users = db.session.query(User).all()
     jobs = db.session.query(Job).all()
     owners = db.session.query(ContentOwner).all()
-    owner = db.session.query(ContentOwner)
-    return render_template('administration.html',AddCrawlerForm=addcrawlerform, EditContentOwnerForm=editcontentownerform, AddUserForm=adduserform, AddJobForm=addjobform, AddContentOwnerForm=addcontentownerform, crawlers=crawlers, users=users, jobs=jobs, owners=owners, owner=owner)
+    return render_template('administration.html',AddCrawlerForm=addcrawlerform,  AddUserForm=adduserform, AddJobForm=addjobform, AddContentOwnerForm=addcontentownerform, crawlers=crawlers, users=users, jobs=jobs, owners=owners)
 
 @app.route('/deleteuser/<id>', methods=['GET'])
 def deleteUser(id):
@@ -140,14 +173,6 @@ def deleteCrawler(id):
     flash("Deleted Crawler {{crawler}}", "alert-success")
     return redirect(url_for('administration'))
 
-@app.route('/deletejob/<id>', methods=['GET'])
-def deleteJob(id):
-    job = db.get_or_404(Job, id)
-    target_id = job.target_id
-    db.session.delete(job)
-    db.session.commit()
-    return redirect(url_for('targetDetail', id=target_id))
-
 @app.route('/deleteowner/<id>', methods=['GET'])
 def deleteOwner(id):
     owner = db.get_or_404(ContentOwner, id)
@@ -158,8 +183,7 @@ def deleteOwner(id):
 
 @app.route('/editowner/<id>', methods=['GET', 'POST'])
 def editOwner(id):
-    print('inside editowner routes')
-    owner = ContentOwner.query.get_or_404(str(id))
+    owner = ContentOwner.query.get_or_404(id)
     form = AddContentOwnerForm(request.form, obj=owner)
     if request.method == 'POST':
         if form.validate():
@@ -169,6 +193,41 @@ def editOwner(id):
             return redirect(url_for('administration'))
     return render_template('edit_owner_modal.html', form=form, owner=owner, id=id)
 
+@app.route('/edituser/<id>', methods=['GET', 'POST'])
+def editUser(id):
+    user = User.query.get_or_404(id)
+    form = AddUserForm(request.form, obj=user)
+    if request.method == 'POST':
+        if form.validate():
+            form.populate_obj(user)
+            db.session.commit()
+            flash(f"{user.username} updated!")
+            return redirect(url_for('administration'))
+    return render_template('edit_user_modal.html', form=form, user=user, id=id)
+
+@app.route('/editcrawler/<id>', methods=['GET', 'POST'])
+def editCrawler(id):
+    crawler = Crawler.query.get_or_404(id)
+    form = AddCrawlerForm(request.form, obj=crawler)
+    if request.method == 'POST':
+        if form.validate():
+            form.populate_obj(crawler)
+            db.session.commit()
+            flash(f"{crawler.name} updated!")
+            return redirect(url_for('administration'))
+    return render_template('edit_crawler_modal.html', form=form, crawler=crawler, id=id)
+
+@app.route('/edittarget/<id>', methods=['GET', 'POST'])
+def editTarget(id):
+    target = Target.query.get_or_404(id)
+    form = AddTargetForm(request.form, obj=target)
+    if request.method == 'POST':
+        if form.validate():
+            form.populate_obj(target)
+            db.session.commit()
+            flash(f"{target.title} updated!")
+            return redirect(url_for('targets'))
+    return render_template('edit_target_modal.html', form=form, target=target, id=id)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

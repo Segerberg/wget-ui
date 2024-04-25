@@ -8,6 +8,7 @@
       <div class="modal-body">
         <form method='POST' action="{{url_for('targets')}}">
             {{ AddTargetForm.csrf_token }}
+            <input type="hidden" name="type" value="addTarget">
             <div class="input-group mb-3">
                 <span class="input-group-text bg-gradient-primary-to-secondary"><i
                         class="bi bi-envelope text-white"></i></span>

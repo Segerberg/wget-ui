@@ -16,10 +16,9 @@ class LoginForm(FlaskForm):
 
 class AddCrawlerForm(FlaskForm):
     name = StringField('Name')
-    type = SelectField('Type', choices=[('crawler','crawler'),('scraper', 'scraper'),('other', 'other')],validate_choice=False)
+    crawler_type = SelectField('Type', choices=[('crawler','crawler'),('scraper', 'scraper'),('other', 'other')],validate_choice=False)
     cmd = StringField('Command')
     settings = TextAreaField('Settings')
-
 
 class AddTargetForm(FlaskForm):
     title = StringField('Title')

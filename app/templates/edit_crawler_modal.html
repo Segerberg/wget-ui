@@ -1,0 +1,42 @@
+{% for crawler in crawlers %}
+<div class="modal fade" id="editCrawlerModal{{ crawler.id }}" tabindex="-1" aria-labelledby="editCrawlerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCrawlerModalLabel">{{ gettext('Edit Crawler')}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method='POST' action="{{url_for('editCrawler', id=crawler.id)}}">
+                    {{ AddCrawlerForm.csrf_token }}
+                    <input type="hidden" name="type" value="editCrawler">
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Name')}}</span>
+                        <input type="text" class="form-control" name="name" value="{{crawler.name}}">
+                    </div>             
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Type')}}</span>
+                        {{AddCrawlerForm.crawler_type(class_="form-control", value=crawler.crawler_type)}}
+                    </div> 
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('cmd')}}</span>
+                        <input type="text" class="form-control"  name="cmd" value="{{crawler.cmd}}">
+                    </div>   
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Settings')}}</span>
+                        <input type="text" class="form-control" name="settings" value="{{crawler.settings}}">
+                    </div>   
+                    <div class="d-grid col-12 mx-auto">
+                        <button class="btn btn-outline-secondary" type="submit">{{ gettext('Save')}}</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

@@ -1,0 +1,39 @@
+{% for user in users %}
+<div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">{{ gettext('Edit User')}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method='POST' action="{{url_for('editUser', id=user.id)}}">
+                    {{ AddUserForm.csrf_token }}
+                    <input type="hidden" name="type" value="editUser">
+                    
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Name')}}</span>
+                        <input type="text" class="form-control" name="owner" value="{{user.username}}">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Password')}}</span>
+                        <input type="password" class="form-control" name="password1" value="{{user.password1}}">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Confirm Password')}}</span>
+                        <input type="password" class="form-control" name="password2" value="{{user.password2}}">
+                    </div>
+                    
+                    <div class="d-grid col-12 mx-auto">
+                        <button class="btn btn-outline-secondary" type="submit">{{ gettext('Save')}}</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

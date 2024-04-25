@@ -41,7 +41,7 @@ class Target(db.Model):
 class Crawler(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
-    type = db.Column(db.String(128))
+    crawler_type = db.Column(db.String(128))
     cmd = db.Column(db.String(128), index=True)
     settings = db.Column(db.Text, index=True)
     jobs = db.relationship('Job', backref='crawlers', lazy='dynamic')
