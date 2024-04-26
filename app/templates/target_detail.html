@@ -47,6 +47,7 @@
                         <tr>
                             <td>{{seed.url}}</td>
                             <td>{{seed.depth}}</td>
+                            <td><button class="btn btn-outline-primary float-end btn-sm" data-bs-toggle="modal" data-bs-target="#editSeedModal{{ seed.id }}">Edit</button></td>
                             <td><a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteSeed', id=seed.id)}}">{{ gettext('Delete')}}</a></td>
                         </tr>
                         {% endfor %}
@@ -59,7 +60,6 @@
             <div class="card">
                 <div class="card-header">{{ gettext('Actions')}}</div>
                 <div class="card-body">
-
                     <a href="{{url_for('deleteTarget', id=target.id)}}" class="btn btn-outline-danger">Delete</a>
                 </div>
             </div>
@@ -117,3 +117,4 @@
 {% endblock %}
 {% include 'add_seed_modal.html' %}
 {% include 'add_job_modal.html' %}
+{% include 'edit_seed_modal.html' %}
