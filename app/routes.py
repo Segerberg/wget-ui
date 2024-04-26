@@ -33,11 +33,6 @@ def targets():
                 db.session.add(target)
                 db.session.commit()
                 return redirect(url_for('targets'))
-        elif request.form['type'] == 'editTarget':
-            if addtargetform.validate_on_submit():
-                id = request.form.get('id')
-                db.session.commit()
-                return redirect(url_for('targets'))
     targets = db.session.query(Target).all()
     return render_template('targets.html', targets=targets, AddTargetForm=addtargetform, User=User)
 
@@ -144,12 +139,6 @@ def administration():
                 id = request.form.get('id') 
                 db.session.commit()
                 return redirect(url_for('administration'))
-        
-        elif request.form['type'] == 'editCrawler': 
-            if addcrawlerform.validate_on_submit():
-                id = request.form.get('id')
-                db.session.commit()
-                return redirect(url_for('administration'))
             
     crawlers = db.session.query(Crawler).all()
     users = db.session.query(User).all()
@@ -209,6 +198,7 @@ def editUser(id):
 def editCrawler(id):
     crawler = Crawler.query.get_or_404(id)
     form = AddCrawlerForm(request.form, obj=crawler)
+    print(form.name)
     if request.method == 'POST':
         if form.validate():
             form.populate_obj(crawler)
@@ -221,6 +211,7 @@ def editCrawler(id):
 def editTarget(id):
     target = Target.query.get_or_404(id)
     form = AddTargetForm(request.form, obj=target)
+    print(form.title, form.description)
     if request.method == 'POST':
         if form.validate():
             form.populate_obj(target)
@@ -240,7 +231,6 @@ def login():
             return redirect(next or url_for('index'))
         flash("Login failed",  "alert-danger")
     return render_template('index.html', LoginForm=form)
-
 
 @app.route('/logout')
 def logout():
