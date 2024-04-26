@@ -4,8 +4,22 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">{{ gettext('Users')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#">Add</button></div>
+                <div class="card-header">{{ gettext('Users')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addUserModal">Add</button></div>
                 <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th>User</th>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{user.username}}</td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button></td>
+                            <td> <a href="{{url_for('deleteUser', id=user.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -22,6 +36,8 @@
                           {% for crawler in crawlers %}
                         <tr>
                             <td>{{crawler.name}}</td>
+                            <td>{{crawler.crawler_type}}</td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editCrawlerModal{{ crawler.id }}">Edit</button></td>
                             <td> <a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
                         </tr>
                         {% endfor %}
@@ -32,12 +48,33 @@
         </div>
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">{{ gettext('Content Owners')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#">Add</button></div>
+                <div class="card-header">{{ gettext('Content Owners')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addContentOwnermodal">Add</button></div>
                 <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th>Name</th>
+                        <th>Ref Code</th>
+                        </thead>
+                        <tbody>
+                        {% for owner in owners %}
+                        <tr>
+                            <td>{{owner.owner}}</td>
+                            <td>{{owner.reference_code}}</td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editOwnerModal{{ owner.id }}">Edit</button></td>
+                            <td> <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                        </tr>
+                        {% endfor %} 
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+{% include 'add_user_modal.html' %}
 {% include 'add_crawler_modal.html' %}
+{% include 'add_content_owner.html' %}
+{% include 'edit_owner_modal.html' %}
+{% include 'edit_user_modal.html' %}
+{% include 'edit_crawler_modal.html' %}

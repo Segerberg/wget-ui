@@ -1,0 +1,33 @@
+{% for target in targets %}
+<div class="modal fade" id="editTargetModal{{ target.id }}" tabindex="-1" aria-labelledby="editTargetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTargetModalLabel">{{ gettext('Edit Target')}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method='POST' action="{{url_for('editTarget', id=target.id)}}">
+                    {{ AddTargetForm.csrf_token }}
+                    <input type="hidden" name="type" value="editTarget">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Title')}}</span>
+                        <input type="text" class="form-control" name="name" value="{{target.title}}">
+                    </div>             
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">{{ gettext('Description')}}</span>
+                        <input type="text" class="form-control" name="description" value="{{target.description}}">
+                    </div>   
+                    <div class="d-grid col-12 mx-auto">
+                        <button class="btn btn-outline-secondary" type="submit">{{ gettext('Save')}}</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     targets = db.relationship('Target', backref='user', lazy='dynamic')
+    is_admin = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -40,7 +41,7 @@ class Target(db.Model):
 class Crawler(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
-    type = db.Column(db.String(128))
+    crawler_type = db.Column(db.String(128))
     cmd = db.Column(db.String(128), index=True)
     settings = db.Column(db.Text, index=True)
     jobs = db.relationship('Job', backref='crawlers', lazy='dynamic')
@@ -65,8 +66,9 @@ class Job(db.Model):
 
 
 class ContentOwner(db.Model):
-    id = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String(128), index=True)
+    id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
+    # id = db.Column(db.Integer, primary_key=True)
+    owner = db.Column(db.String(128), index=True)
     reference_code = db.Column(db.String(128), index=True)
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
     def __repr__(self):

@@ -1,3 +1,4 @@
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo
@@ -15,7 +16,7 @@ class LoginForm(FlaskForm):
 
 class AddCrawlerForm(FlaskForm):
     name = StringField('Name')
-    type = SelectField('Type', choices=[('crawler','crawler'),('scraper', 'scraper'),('other', 'other')],validate_choice=False)
+    crawler_type = SelectField('Type', choices=[('crawler','crawler'),('scraper', 'scraper'),('other', 'other')],validate_choice=False)
     cmd = StringField('Command')
     settings = TextAreaField('Settings')
 
@@ -34,3 +35,11 @@ class AddSeedForm(FlaskForm):
 
 class AddJobForm(FlaskForm):
     crawler = SelectField('Crawler')
+
+class AddContentOwnerForm(FlaskForm):
+    owner = StringField('Owner name')
+    reference_code = StringField('reference code')
+    
+class EditContentOwnerForm(AddContentOwnerForm):
+    owner = StringField('Owner name')
+    reference_code = StringField('reference code')
