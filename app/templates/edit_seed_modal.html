@@ -1,0 +1,51 @@
+{% for seed in seeds %}
+<div class="modal fade" id="editSeedModal{{ seed.id }}" tabindex="-1" aria-labelledby="editSeedModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSeedModalLabel">{{ gettext('Edit Seed')}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method='POST' action="{{url_for('editSeed', id=seed.id)}}">
+                    {{ AddSeedForm.csrf_token }}
+                    <input type="hidden" name="type" value="editSeed">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        {{ AddSeedForm.url(class_="form-control", placeholder_="Url", value=seed.url)}}
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        {{ AddSeedForm.depth(class_="form-control", placeholder_="Depth", value=seed.depth)}}
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        {{ AddSeedForm.exclude_patterns(class_="form-control", placeholder_="Exclude Patterns", value=seed.exclude_patterns)}}
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        {{ AddSeedForm.include_patterns(class_="form-control", placeholder_="Include Patterns", value=seed.include_patterns)}}
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        {{ AddSeedForm.domains(class_="form-control", placeholder_="Domains", value=seed.domains)}}
+                    </div>
+                    <div class="d-grid col-12 mx-auto">
+                        <button class="btn btn-outline-secondary" type="submit"><span></span>{{ gettext('Save')}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">{{ gettext('Close')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

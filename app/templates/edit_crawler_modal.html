@@ -12,20 +12,26 @@
                     <input type="hidden" name="type" value="editCrawler">
                     
                     <div class="input-group mb-3">
-                        <span class="input-group-text">{{ gettext('Name')}}</span>
-                        <input type="text" class="form-control" name="name" value="{{crawler.name}}">
+
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        <input type="text" class="form-control" name="name" placeholder="Name" value="{{crawler.name}}">
                     </div>             
                     <div class="input-group mb-3">
-                        <span class="input-group-text">{{ gettext('Type')}}</span>
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
                         {{AddCrawlerForm.crawler_type(class_="form-control", value=crawler.crawler_type)}}
                     </div> 
                     <div class="input-group mb-3">
-                        <span class="input-group-text">{{ gettext('cmd')}}</span>
-                        <input type="text" class="form-control"  name="cmd" value="{{crawler.cmd}}">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        <input type="text" class="form-control"  name="cmd" placeholder="cmd" value="{{crawler.cmd}}">
                     </div>   
                     <div class="input-group mb-3">
-                        <span class="input-group-text">{{ gettext('Settings')}}</span>
-                        <input type="text" class="form-control" name="settings" value="{{crawler.settings}}">
+                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                            class="bi bi-envelope text-white"></i></span>
+                        <input type="text" class="form-control" name="settings" placeholder="Settings" value="{{crawler.settings}}">
+
                     </div>   
                     <div class="d-grid col-12 mx-auto">
                         <button class="btn btn-outline-secondary" type="submit">{{ gettext('Save')}}</button>
