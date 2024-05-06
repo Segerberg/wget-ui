@@ -8,14 +8,14 @@
                 <div class="card-body">
                     <table class="table">
                         <thead>
-                        <th>User</th>
+                        <th colspan="2">User</th>
                         </thead>
                         <tbody>
                         {% for user in users %}
                         <tr>
                             <td>{{user.username}}</td>
-                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button></td>
-                            <td> <a href="{{url_for('deleteUser', id=user.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button> <a href="{{url_for('deleteUser', id=user.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
+
                         </tr>
                         {% endfor %}
                         </tbody>
@@ -30,15 +30,15 @@
                     <table class="table">
                         <thead>
                         <th>Name</th>
-                        <th>Actions</th>
+                        <th colspan="2">Type</th>
                         </thead>
                         <tbody>
                           {% for crawler in crawlers %}
                         <tr>
                             <td>{{crawler.name}}</td>
                             <td>{{crawler.crawler_type}}</td>
-                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editCrawlerModal{{ crawler.id }}">Edit</button></td>
-                            <td> <a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editCrawlerModal{{ crawler.id }}">Edit</button><a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
+
                         </tr>
                         {% endfor %}
                         </tbody>
@@ -53,15 +53,15 @@
                     <table class="table">
                         <thead>
                         <th>Name</th>
-                        <th>Ref Code</th>
+                        <th colspan="2">Ref</th>
                         </thead>
                         <tbody>
                         {% for owner in owners %}
                         <tr>
                             <td>{{owner.owner}}</td>
                             <td>{{owner.reference_code}}</td>
-                            <td><button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editOwnerModal{{ owner.id }}">Edit</button></td>
-                            <td> <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end">Delete</a></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editOwnerModal{{ owner.id }}">Edit</button>
+                             <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
                         </tr>
                         {% endfor %} 
                         </tbody>
