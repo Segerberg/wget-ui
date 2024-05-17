@@ -12,17 +12,17 @@
                     <input type="hidden" name="type" value="editUser">
                     
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Username')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control" name="owner" placeholder="Name" value="{{user.username}}">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Password')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="password" class="form-control" name="password1" placeholder="Password" value="{{user.password1}}">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Confirm Password')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="password" class="form-control" name="password2" placeholder="Confirm Password" value="{{user.password2}}">
                     </div>

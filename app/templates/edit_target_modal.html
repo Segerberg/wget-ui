@@ -11,12 +11,12 @@
                     {{ AddTargetForm.csrf_token }}
                     <input type="hidden" name="type" value="editTarget">
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Title')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control" name="title" placeholder="Title" value="{{target.title}}">
                     </div>             
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Description')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control" name="description" placeholder="Description" value="{{target.description}}">
                     </div>   
