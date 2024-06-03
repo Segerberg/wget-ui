@@ -13,22 +13,22 @@
                     
                     <div class="input-group mb-3">
 
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Name')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control" name="name" placeholder="Name" value="{{crawler.name}}">
                     </div>             
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Type')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{AddCrawlerForm.crawler_type(class_="form-control", value=crawler.crawler_type)}}
                     </div> 
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Command')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control"  name="cmd" placeholder="cmd" value="{{crawler.cmd}}">
                     </div>   
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Settings')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         <input type="text" class="form-control" name="settings" placeholder="Settings" value="{{crawler.settings}}">
 

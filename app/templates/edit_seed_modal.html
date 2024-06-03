@@ -11,27 +11,27 @@
                     {{ AddSeedForm.csrf_token }}
                     <input type="hidden" name="type" value="editSeed">
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('URL')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{ AddSeedForm.url(class_="form-control", placeholder_="Url", value=seed.url)}}
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Depth')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{ AddSeedForm.depth(class_="form-control", placeholder_="Depth", value=seed.depth)}}
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Exclude')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{ AddSeedForm.exclude_patterns(class_="form-control", placeholder_="Exclude Patterns", value=seed.exclude_patterns)}}
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Include')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{ AddSeedForm.include_patterns(class_="form-control", placeholder_="Include Patterns", value=seed.include_patterns)}}
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text bg-gradient-primary-to-secondary"><i
+                        <span class="input-group-text bg-gradient-primary-to-secondary">{{ gettext('Domains')}}<i
                             class="bi bi-envelope text-white"></i></span>
                         {{ AddSeedForm.domains(class_="form-control", placeholder_="Domains", value=seed.domains)}}
                     </div>

@@ -2,12 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+     <link type="text/css" href="{{url_for('static', filename='css/app.css')}}" rel="stylesheet">
     <link type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
-    <link type="text/css" href="{{url_for('static', filename='css/app.css')}}" rel="stylesheet">
+
     <meta charset="UTF-8">
     <title>Wget-UI</title>
 </head>
 <body>
+
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a class="navbar-brand" href="{{url_for('index')}}">{{ gettext('GU-WEBARCHIVING')}}</a>
@@ -49,8 +53,7 @@
 {% block messages %}
 
 {% endblock%}
-<script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{url_for('static', filename='js/htmx.min.js')}}"></script>
+
 
 <footer class="footer">
     <div class="container text-center">
@@ -69,5 +72,7 @@
 
     </div>
   </footer>
+<script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/htmx.min.js')}}"></script>
 </body>
 </html>
