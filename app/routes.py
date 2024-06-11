@@ -1,9 +1,12 @@
-from flask import render_template, session, request, send_file, flash, redirect, url_for, jsonify
+import os
+import shutil
+from flask import render_template, request, flash, redirect, url_for, send_from_directory
 from app import app, db
 from app.models import Target, User, Seed, Crawler, ContentOwner, Job
 from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm, EditContentOwnerForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import wget
+from app.tasks import wget, create_sip
+from app.utils import bytes_to_human_readable, get_file_stats
 
 
 @app.route('/crawl/<id>')
@@ -15,12 +18,31 @@ def crawl(id):
     flash(f"Started crawl", "alert-success")
     return redirect(url_for('targetDetail',id=job.target_id))
 
+@app.route('/create-ip/<id>')
+def create_ip(id):
+    username = current_user.username
+    task = create_sip.delay(id, username)
+    return redirect(url_for('jobDetail', id=id))
+
+
+@app.route('/check_task/<task_id>')
+def check_task(task_id):
+    task = wget.AsyncResult(task_id)
+    if task.state == 'Crawling':
+        return 'Crawling'
+    elif task.state == 'SUCCESS':
+        return 'Done'
+    else:
+        return task.state
+
 @app.route('/')
 def index():
     loginform = LoginForm()
     target_count = Target.query.count()
     targets = db.session.query(Target).all()
-    return render_template('index.html', targets=targets, LoginForm=loginform, target_count=target_count)
+    SIP_DIR = os.environ.get('SIP_DIR') or 'sips'
+    sip_files = [file for file in os.listdir(SIP_DIR) if file.endswith('.tar')]
+    return render_template('index.html', targets=targets, LoginForm=loginform, target_count=target_count, sip_files=sip_files)
 
 
 @app.route('/targets', methods=['GET', 'POST'])
@@ -79,9 +101,48 @@ def deleteTarget(id):
     db.session.commit()
     return redirect(url_for('targets'))
 
+@app.route('/job/<id>',methods=['GET', 'POST'])
+def jobDetail(id):
+    warcs = {}
+    job = db.get_or_404(Job, id)
+    WARC_DIR = os.environ.get('WARC_DIR') or 'warcs'
+    SIP_DIR = os.environ.get('SIP_DIR') or 'sips'
+    BASE_URL = os.environ.get('BASE_URL') or '127.0.0.1:5000'
+    REPLAY_URL = os.environ.get('REPLAY_URL') or '127.0.0.1:5000'
+    job_dir = os.path.join(WARC_DIR, job.task_id)
+    warc_files = os.listdir(job_dir)
+    sip_files = os.listdir(SIP_DIR)
+    sip = None
+    sip_size = None
+    sip_created = None
+    for file_name in sip_files:
+        if os.path.splitext(os.path.basename(file_name))[0] == job.task_id and file_name.endswith(".tar"):
+            sip = file_name
+            sip_size = bytes_to_human_readable(os.path.getsize(os.path.join(SIP_DIR,sip)))
+            sip_created = get_file_stats(os.path.join(SIP_DIR,sip))
+    for file_name in warc_files:
+        file_path = os.path.join(job_dir, file_name)
+        if os.path.isfile(file_path) and file_name.endswith('.warc.gz') and not "meta.warc.gz" in file_name:
+            file_size = os.path.getsize(file_path)
+            print(f"{file_name}: {bytes_to_human_readable(file_size)}")
+            warcs[file_name] = bytes_to_human_readable(file_size)
+
+    return render_template('job_detail.html', job=job, warcs=warcs, job_dir=job_dir, base_url=BASE_URL,
+                           replay_url=REPLAY_URL, sip=sip, sip_size=sip_size, sip_created=sip_created)
+
+@app.route('/downloadWarc/<id>/<file>',methods=['GET', 'POST'])
+def downloadWarc(id, file):
+    job = db.get_or_404(Job, id)
+    WARC_DIR = os.environ.get('WARC_DIRd') or 'C:/earkiv/wget-ui/warcs' #todo
+    job_dir = os.path.join(WARC_DIR, job.task_id)
+    return send_from_directory(job_dir, file, as_attachment=True)
+
+
 @app.route('/deletejob/<id>', methods=['GET'])
 def deleteJob(id):
     job = db.get_or_404(Job, id)
+    WARC_DIR = os.environ.get('WARC_DIR') or 'warcs'
+    shutil.rmtree(os.path.join(WARC_DIR,job.task_id))
     target_id = job.target_id
     db.session.delete(job)
     db.session.commit()

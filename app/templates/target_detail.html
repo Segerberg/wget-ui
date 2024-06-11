@@ -60,7 +60,7 @@
             <div class="card">
                 <div class="card-header">{{ gettext('Actions')}}</div>
                 <div class="card-body">
-                    <a href="{{url_for('deleteTarget', id=target.id)}}" class="btn btn-outline-danger">Delete</a>
+                    <a href="{{url_for('deleteTarget', id=target.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger">Delete</a>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
                           {% for job in jobs %}
                           {% if job.startDateTime %}
                         <tr>
-                            <td>{{job.id}}</td>
+                            <td><a class="badge rounded-pill bg-success" href="{{url_for('jobDetail', id=job.id)}}">View</a></td>
                             <td>{% if not job.EndDateTime %}
                                 <span class="badge rounded-pill bg-warning">{{ gettext('Running')}}</span>{% else %}
                                 <span class="badge rounded-pill bg-secondary">{{ gettext('Finished')}}</span>  {% endif %}

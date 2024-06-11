@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">{{ gettext('Status')}}</div>
+                <div class="card-body">
+                    <ul class="list-group list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <span class="badge rounded-pill bg-warning" h="{{url_for('check_task', task_id=job.task_id)}}" hx-trigger="every 1s">Pending</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+                    <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">{{ gettext('Actions')}}</div>
+                <div class="card-body">
+                    <a href="{{url_for('create_ip', id=job.id)}}" class="btn btn-outline-success">Create SIP</a>
+                    <a href="{{url_for('deleteJob', id=job.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger">Delete</a>
+
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="col-lg-6">
+            {% if warcs %}
+            <div class="card">
+                <div class="card-header">{{ gettext('Warcs')}}</div>
+                <div class="card-body">
+
+                            <div class="ms-2 me-auto">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Size</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for warc, size in warcs.items() %}
+                                    <tr>
+                                       <td>{{warc.replace(job.task_id,'').replace('-','')}}</td>
+                                        <td>{{size}}</td>
+                                        <td><a href="{{replay_url}}/?source={{base_url}}{{url_for('downloadWarc',id=job.id, file=warc)}}" target="_blank" class="btn btn-outline-success btn-sm float-end me-2">View</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if sip %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">{{ gettext('SIP')}}</div>
+                <div class="card-body">
+
+                            <div class="ms-2 me-auto">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Created</th>
+                                        <th>Size</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                       <td>{{sip}}</td>
+                                        <td>{{sip_created}}</td>
+                                        <td>{{sip_size}}</td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

@@ -2,6 +2,7 @@
 {% block content %}
  <div class="container mt-4">
      <h2>{{ gettext('Targets owned by me')}}</h2>
+     <button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addTargetModal">Add Target</button>
     <table class="table">
       <thead>
         <tr>
@@ -18,7 +19,7 @@
           <td>{{target.description}}</td>
           <td>{{target.name}}</td>
           <td>
-           <a href="{{url_for('deleteTarget', id=target.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a>
+           <a href="{{url_for('deleteTarget', id=target.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a>
            <button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editTargetModal{{ target.id }}">Edit</button>
           </td>
         </tr>
@@ -27,7 +28,7 @@
       {% endfor %}
       </tbody>
     </table>
-    <button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addTargetModal">Add Target</button>
+
   </div>
  <div class="container mt-4 pt-lg-5">
      <h2>{{ gettext('Targets owned by others')}}</h2>

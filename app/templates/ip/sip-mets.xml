@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ext="ExtensionMETS" xsi:schemaLocation="http://www.loc.gov/METS/ http://xml.ra.se/e-arkiv/METS/version12/CSPackageMETS.xsd ExtensionMETS http://xml.ra.se/e-arkiv/METS/version12/CSPackageExtensionMETS.xsd" PROFILE="http://xml.ra.se/e-arkiv/METS/version12/CommonSpecificationSwedenPackageProfile.xml" ID="ID{{uuid.uuid4()}}" OBJID="{{data.obj_id}}" LABEL="{{data.title}}" TYPE="Webpages" ext:CONTENTTYPESPECIFICATION="FGS ÄHS version 1.0"  ext:APPRAISAL="No" ext:STARTDATE="1995-01-01" ext:ENDDATE="2001-01-01">
+  <mets:metsHdr CREATEDATE="{{data.ip_creation}}" RECORDSTATUS="NEW" ext:OAISSTATUS="SIP" ext:AGREEMENTFORM="AGREEMENT">
+    <mets:agent ROLE="ARCHIVIST" TYPE="ORGANIZATION">
+        <mets:name>Göteborgs universitet</mets:name>
+        <mets:note>ORG:202100-3153</mets:note>
+    </mets:agent>
+    <mets:agent ROLE="CREATOR" TYPE="ORGANIZATION">
+      <mets:name>TODO</mets:name>
+      <mets:note>local:TODO</mets:note>
+    </mets:agent>
+    <mets:agent ROLE="CREATOR" TYPE="INDIVIDUAL">
+      <mets:name>{{data.current_user}}</mets:name>
+    </mets:agent>
+    <mets:agent ROLE="CREATOR" TYPE="OTHER" OTHERTYPE="SOFTWARE">
+      <mets:name>WGET-UI</mets:name>
+      <mets:note>{{data.software_version}}</mets:note>
+    </mets:agent>
+    <mets:altRecordID TYPE="SUBMISSIONAGREEMENT">TODO</mets:altRecordID>
+    <mets:metsDocumentID>mets.xml</mets:metsDocumentID>
+  </mets:metsHdr>
+  <mets:amdSec ID="ID{{uuid.uuid4()}}">
+    <mets:digiprovMD ID="ID{{uuid.uuid4()}}">
+      <mets:mdRef MIMETYPE="application/xml" xlink:href="file:///metadata/premis.xml" LOCTYPE="URL" CREATED="2024-06-06T12:28:09.850063+02:00" CHECKSUM="ce2fdec9d2dcb3c9b6ac9c300ad32cde" xlink:type="simple" ID="ID2ab0369c-df35-4e97-bd08-4cb88de42f47" MDTYPE="PREMIS" CHECKSUMTYPE="MD5"/>
+    </mets:digiprovMD>
+  </mets:amdSec>
+  <mets:fileSec ID="ID{{uuid.uuid4()}}">
+    <mets:fileGrp ID="ID{{uuid.uuid4()}}">
+      <mets:file ID="IDe527374b-d9c3-456f-bbe2-7679f34bc1bb" MIMETYPE="application/xml" SIZE="8276" CREATED="2024-06-06T12:28:07.509116+02:00" CHECKSUM="507c4ff69ff0825ec1978cd34a7ef6a5" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///ipevents.xml" xlink:type="simple"/>
+      </mets:file>
+      {{content_files}}
+      {% for file in data.content %}
+      <mets:file ID="ID{{file.uuid}}" MIMETYPE="application/warc" SIZE="{{file.size}}" CREATED="{{file.creation}}" CHECKSUM="{{file.checksum}}" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///content/{{file.name}}" xlink:type="simple"/>
+      </mets:file>
+      {% endfor %}
+      <mets:file ID="IDf24f07ec-021f-4323-a736-ab40d71af534" MIMETYPE="application/xml" SIZE="155003" CREATED="2024-06-06T12:28:04.318050+02:00" CHECKSUM="e977638fc52d73c9d743d45f5d7d09bd" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///metadata/CSPackageMETS.xsd" xlink:type="simple"/>
+      </mets:file>
+      <mets:file ID="ID3287e626-967e-41f3-b067-49d024c33204" MIMETYPE="application/xml" SIZE="3461" CREATED="2024-06-06T12:28:04.341059+02:00" CHECKSUM="671336f85b5fea9195f1cf3889660d68" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///metadata/CSPackageExtensionMETS.xsd" xlink:type="simple"/>
+      </mets:file>
+      <mets:file ID="IDfe60aa05-45f3-4b8f-b14d-82f14359be00" MIMETYPE="application/xml" SIZE="3180" CREATED="2024-06-06T12:28:04.364068+02:00" CHECKSUM="6bdc7f9459a502964f889d70a335cece" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///metadata/xlink.xsd" xlink:type="simple"/>
+      </mets:file>
+      <mets:file ID="IDe82ae2eb-429e-4ae3-96c3-269844c83fb7" MIMETYPE="application/xml" SIZE="52845" CREATED="2024-06-06T12:28:05.215085+02:00" CHECKSUM="60dfc63a796c507af85c6ab635bfdf8e" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///metadata/premis.xsd" xlink:type="simple"/>
+      </mets:file>
+    </mets:fileGrp>
+  </mets:fileSec>
+  <mets:structMap ID="ID{{uuid.uuid4()}}">
+    <mets:div LABEL="Package:{{data.obj_id}}">
+      <mets:div LABEL="root">
+        <mets:fptr FILEID="IDe527374b-d9c3-456f-bbe2-7679f34bc1bb"/>
+      </mets:div>
+      <mets:div LABEL="content">
+         {% for file in data.content %}
+        <mets:fptr FILEID="ID{{file.uuid}}"/>
+        {% endfor %}
+      </mets:div>
+      <mets:div LABEL="metadata">
+        <mets:fptr FILEID="IDf24f07ec-021f-4323-a736-ab40d71af534"/>
+        <mets:fptr FILEID="ID3287e626-967e-41f3-b067-49d024c33204"/>
+        <mets:fptr FILEID="IDfe60aa05-45f3-4b8f-b14d-82f14359be00"/>
+        <mets:fptr FILEID="IDe82ae2eb-429e-4ae3-96c3-269844c83fb7"/>
+        <mets:fptr FILEID="ID2ab0369c-df35-4e97-bd08-4cb88de42f47"/>
+      </mets:div>
+    </mets:div>
+  </mets:structMap>
+</mets:mets>

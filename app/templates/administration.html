@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">{{ gettext('Users')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addUserModal">Add</button></div>
                 <div class="card-body">
@@ -14,7 +14,7 @@
                         {% for user in users %}
                         <tr>
                             <td>{{user.username}}</td>
-                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button> <a href="{{url_for('deleteUser', id=user.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button> <a href="{{url_for('deleteUser', id=user.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
 
                         </tr>
                         {% endfor %}
@@ -23,7 +23,9 @@
                 </div>
             </div>
         </div>
-                <div class="col-lg-4">
+        </div>
+        <div class="row">
+        <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">{{ gettext('Crawlers')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addCrawlerModal">Add</button></div>
                 <div class="card-body">
@@ -37,7 +39,7 @@
                         <tr>
                             <td>{{crawler.name}}</td>
                             <td>{{crawler.crawler_type}}</td>
-                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editCrawlerModal{{ crawler.id }}">Edit</button><a href="{{url_for('deleteCrawler', id=crawler.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
+                            <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editCrawlerModal{{ crawler.id }}">Edit</button><a href="{{url_for('deleteCrawler', id=crawler.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
 
                         </tr>
                         {% endfor %}
@@ -46,7 +48,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">{{ gettext('Content Owners')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addContentOwnermodal">Add</button></div>
                 <div class="card-body">
@@ -61,7 +65,7 @@
                             <td>{{owner.owner}}</td>
                             <td>{{owner.reference_code}}</td>
                             <td><button class="btn btn-outline-primary btn-sm float-end me-2" data-bs-toggle="modal" data-bs-target="#editOwnerModal{{ owner.id }}">Edit</button>
-                             <a href="{{url_for('deleteOwner', id=owner.id)}}" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
+                             <a href="{{url_for('deleteOwner', id=owner.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger btn-sm float-end me-2">Delete</a></td>
                         </tr>
                         {% endfor %} 
                         </tbody>
@@ -70,6 +74,7 @@
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
 {% include 'add_user_modal.html' %}

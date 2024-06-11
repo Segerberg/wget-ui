@@ -15,6 +15,7 @@ babel = Babel(app)
 mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
+__version__ = "0.1"
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'],
