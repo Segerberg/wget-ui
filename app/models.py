@@ -27,13 +27,15 @@ class User(UserMixin, db.Model):
 
 
 class Target(db.Model):
-    id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
+    __tablename__ = 'target'
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(128), index=True)
     description = db.Column(db.String(128), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     jobs = db.relationship('Job', backref='targets', lazy='dynamic', cascade="all,delete")
     seeds = db.relationship('Seed', backref='targets', lazy='dynamic', cascade="all,delete")
-    content_owners = db.relationship('ContentOwner', backref='targets', lazy='dynamic')
+    content_owners = db.relationship('ContentOwner', secondary='target_contentowner', back_populates='targets')
+
     def __repr__(self):
         return self.title
 
@@ -59,21 +61,21 @@ class Job(db.Model):
     EndDateTime = db.Column(db.DateTime)
     target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
     crawler_id = db.Column(db.Integer, db.ForeignKey('crawler.id'))
-    result = db.Column(db.String(128))
+    state = db.Column(db.String(128))
 
     def __repr__(self):
         return self.id
 
 
 class ContentOwner(db.Model):
-    id = db.Column(db.String,primary_key=True, default=lambda: str(uuid.uuid4()))
-    # id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'contentowner'
+    id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
     owner = db.Column(db.String(128), index=True)
     reference_code = db.Column(db.String(128), index=True)
-    target_id = db.Column(db.Integer, db.ForeignKey('target.id'))
-    def __repr__(self):
-        return self.name
+    targets = db.relationship('Target', secondary='target_contentowner', back_populates='content_owners')
 
+    def __repr__(self):
+        return self.owner  # Changed to 'self.owner' to match the 'owner' field
 
 class Seed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -88,3 +90,8 @@ class Seed(db.Model):
 
 
 
+target_contentowner = db.Table(
+    'target_contentowner',
+    db.Column('target_id', db.String, db.ForeignKey('target.id')),  # Changed to db.String to match Target.id type
+    db.Column('contentowner_id', db.String, db.ForeignKey('contentowner.id'))  # Changed to db.String to match ContentOwner.id type
+)

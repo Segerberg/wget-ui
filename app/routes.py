@@ -3,10 +3,14 @@ import shutil
 from flask import render_template, request, flash, redirect, url_for, send_from_directory
 from app import app, db
 from app.models import Target, User, Seed, Crawler, ContentOwner, Job
-from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm, EditContentOwnerForm
+from app.forms import LoginForm, AddTargetForm, AddSeedForm, AddCrawlerForm, AddUserForm, AddJobForm, AddContentOwnerForm, EditContentOwnerForm, CreateSIPForm, AddContentOwnerTargetForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.tasks import wget, create_sip
-from app.utils import bytes_to_human_readable, get_file_stats
+from app.tasks import wget, create_sip, put_s3_task
+from app.utils import bytes_to_human_readable, get_file_stats, convert_db_date_format
+import requests
+import json
+from minio import Minio
+import io
 
 
 @app.route('/crawl/<id>')
@@ -14,16 +18,30 @@ def crawl(id):
     job = db.get_or_404(Job, id)
     task = wget.delay(id)
     job.task_id = task.id
+    job.state = "crawling"
     db.session.commit()
     flash(f"Started crawl", "alert-success")
     return redirect(url_for('targetDetail',id=job.target_id))
 
-@app.route('/create-ip/<id>')
+@app.route('/create-ip/<id>', methods=['POST'])
 def create_ip(id):
+    job = db.get_or_404(Job, id)
+    job.state = "creating sip"
+    db.session.commit()
+    create_sip_form = CreateSIPForm()
+    SA = create_sip_form.SA.data
     username = current_user.username
-    task = create_sip.delay(id, username)
+    task = create_sip.delay(id, username, SA)
     return redirect(url_for('jobDetail', id=id))
 
+@app.route('/put_s3/<job_id>/<obj_id>')
+def put_s3(job_id, obj_id):
+    task = put_s3_task.delay(obj_id)
+    job = db.get_or_404(Job, job_id)
+    job.state = "preserving"
+    db.session.commit()
+
+    return redirect(url_for('jobDetail', id=job_id))
 
 @app.route('/check_task/<task_id>')
 def check_task(task_id):
@@ -34,6 +52,13 @@ def check_task(task_id):
         return 'Done'
     else:
         return task.state
+
+@app.route('/check_job_state/<id>')
+def check_job_state(id):
+    job = db.get_or_404(Job,id)
+    print(job.state)
+    return str(job.state)
+
 
 @app.route('/')
 def index():
@@ -68,8 +93,11 @@ def targets():
 def targetDetail(id):
     addseedform = AddSeedForm()
     addjobform = AddJobForm()
+    addcontentownertargetform = AddContentOwnerTargetForm()
     crawlers = db.session.query(Crawler).all()
+    content_owners = db.session.query(ContentOwner).all()
     addjobform.crawler.choices = [(c.id, c.name) for c in crawlers]
+    addcontentownertargetform.content_owner.choices = [(c.id, c.owner) for c in content_owners]
     if request.method == 'POST':
         if request.form['type'] == 'addSeed':
             if addseedform.validate_on_submit():
@@ -82,16 +110,27 @@ def targetDetail(id):
                 return redirect(url_for('targetDetail',id=id))
 
         elif request.form['type'] == 'addJob':
-            job = Job(target_id=id, crawler_id=addjobform.crawler.data)
+            job = Job(target_id=id, crawler_id=addjobform.crawler.data, state="prepared")
             db.session.add(job)
             db.session.commit()
             flash(f"Added job", "alert-success")
             return redirect(url_for('targetDetail', id=id))
 
+        elif request.form['type'] == 'addContentOwnerTarget':
+            print("hej")
+            content_owner = db.get_or_404(ContentOwner, addcontentownertargetform.content_owner.data)
+            print(content_owner)
+            target = db.get_or_404(Target, id)
+            target.content_owners.append(content_owner)
+            db.session.commit()
+            return redirect(url_for('targetDetail', id=id))
+
     target = db.get_or_404(Target, id)
+    content_owners = target.content_owners
     seeds = Seed.query.filter_by(target_id=id).all()
     jobs = Job.query.filter_by(target_id=id).all()
-    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, AddJobForm=addjobform, seeds=seeds, jobs=jobs)
+    return render_template('target_detail.html', target=target, AddSeedForm=addseedform, AddJobForm=addjobform, seeds=seeds, jobs=jobs,
+                           AddContentOwnerTargetForm=addcontentownertargetform, content_owners=content_owners)
 
 
 @app.route('/deletetarget/<id>', methods=['GET'])
@@ -103,6 +142,7 @@ def deleteTarget(id):
 
 @app.route('/job/<id>',methods=['GET', 'POST'])
 def jobDetail(id):
+    create_sip_form = CreateSIPForm()
     warcs = {}
     job = db.get_or_404(Job, id)
     WARC_DIR = os.environ.get('WARC_DIR') or 'warcs'
@@ -120,6 +160,19 @@ def jobDetail(id):
             sip = file_name
             sip_size = bytes_to_human_readable(os.path.getsize(os.path.join(SIP_DIR,sip)))
             sip_created = get_file_stats(os.path.join(SIP_DIR,sip))
+    if not sip:
+        essarch_api = os.environ.get('ESSARCH_API')
+        essarch_token = os.environ.get('ESSARCH_TOKEN')
+        headers = {
+            "Accept": "application/json",
+            "Authorization": essarch_token
+        }
+
+        r = requests.get(essarch_api+'/'+'submission-agreements', headers=headers)
+        sas = json.loads(r.content)
+
+        create_sip_form.SA.choices = [(c['id'], c['name']) for c in sas]
+
     for file_name in warc_files:
         file_path = os.path.join(job_dir, file_name)
         if os.path.isfile(file_path) and file_name.endswith('.warc.gz') and not "meta.warc.gz" in file_name:
@@ -128,7 +181,7 @@ def jobDetail(id):
             warcs[file_name] = bytes_to_human_readable(file_size)
 
     return render_template('job_detail.html', job=job, warcs=warcs, job_dir=job_dir, base_url=BASE_URL,
-                           replay_url=REPLAY_URL, sip=sip, sip_size=sip_size, sip_created=sip_created)
+                           replay_url=REPLAY_URL, sip=sip, sip_size=sip_size, sip_created=sip_created,CreateSIPForm=create_sip_form)
 
 @app.route('/downloadWarc/<id>/<file>',methods=['GET', 'POST'])
 def downloadWarc(id, file):
@@ -142,7 +195,9 @@ def downloadWarc(id, file):
 def deleteJob(id):
     job = db.get_or_404(Job, id)
     WARC_DIR = os.environ.get('WARC_DIR') or 'warcs'
-    shutil.rmtree(os.path.join(WARC_DIR,job.task_id))
+    if job.task_id:
+        if os.path.exists(os.path.join(WARC_DIR,job.task_id)):
+            shutil.rmtree(os.path.join(WARC_DIR,job.task_id))
     target_id = job.target_id
     db.session.delete(job)
     db.session.commit()

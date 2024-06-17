@@ -8,14 +8,10 @@ from urllib.parse import urlparse
 import os
 import json
 from datetime import datetime, timezone
-from app.utils import get_file_stats, calculate_md5, create_xml, create_tar, create_uuid
+from app.utils import get_file_stats, calculate_md5, create_xml, create_tar, create_uuid, convert_db_date_format
 import shutil
-# CreateSIP
-# Including METS, PREMIS and CITS for Webarchives and package to a ZIP
-
-# PUT to S3
+from minio import Minio
 # PUSH to Wayback
-# RunCrawl
 # Upload seeds config file (csv)
 
 @celery.task(bind=True)
@@ -56,11 +52,12 @@ def wget(self, id):
         except: # todo catch error
             pass
     job.EndDateTime = datetime.utcnow()
+    job.state = "crawled"
     db.session.commit()
 
 
 @celery.task(bind=True)
-def create_sip(self, id, username):
+def create_sip(self, id, username, SA):
     SIP_DIR = os.environ.get('SIP_DIR') or 'sips'
     if not os.path.exists(SIP_DIR):
         os.makedirs(SIP_DIR)
@@ -72,6 +69,9 @@ def create_sip(self, id, username):
     job = db.get_or_404(Job, id)
     obj_id = job.task_id
     target = db.get_or_404(Target,job.target_id)
+
+    content_owners = target.content_owners
+
     content_files = []
     schema_files = []
     WARC_DIR = os.environ.get('WARC_DIR') or 'warcs'
@@ -106,7 +106,9 @@ def create_sip(self, id, username):
 
 
     data = {"content":content_files, "schemas":schema_files, "ip_creation":creation_date_str, "obj_id":str(obj_id), "title":target.title,
-            "software_version":__version__, "current_user":username, "job_start":job.startDateTime, "job_end":job.EndDateTime}
+            "software_version":__version__, "current_user":username, "job_start":job.startDateTime,
+            "job_end":job.EndDateTime, "content_start_date":convert_db_date_format(job.startDateTime),
+            "content_end_date":convert_db_date_format(job.EndDateTime), "content_owners":content_owners}
 
     ipenvents_filepath = os.path.join(job_dir, 'ipevents.xml')
     with open(ipenvents_filepath, 'w', encoding='utf-8') as f:
@@ -134,6 +136,40 @@ def create_sip(self, id, username):
         mets = create_xml(target, data, 'profiles/GU-websites-1.0/templates/sip-mets.xml')
         f.write(mets)
 
-    if not os.path.isfile(os.path.join(SIP_DIR,f"{obj_id}.tar")):
-        create_tar(job_dir, os.path.join(SIP_DIR,f"{obj_id}.tar"))
+    tar_file = os.path.join(SIP_DIR,f"{obj_id}.tar")
+    if not os.path.isfile(tar_file):
+        create_tar(job_dir, tar_file)
         #shutil.rmtree(job_dir)
+        with open(os.path.join(SIP_DIR,f"{obj_id}.xml"),'w', encoding='utf-8') as f:
+            tar_file_size = os.path.getsize(tar_file)
+            tar_file_creation = get_file_stats(tar_file)
+            tar_checksum = calculate_md5(tar_file)
+            data['SA'] = SA
+            data["tar_file"] = {"size":tar_file_size, "creation":tar_file_creation, "checksum":tar_checksum, "uuid":create_uuid()}
+            submit_description = create_xml(target, data, 'profiles/GU-websites-1.0/templates/submit_description.xml')
+            f.write(submit_description)
+    job.state = "sip created"
+    db.session.commit()
+
+@celery.task(bind=True)
+def put_s3_task(self, obj_id):
+    SIP_DIR = os.environ.get('SIP_DIR')
+    SD_path = os.path.join(SIP_DIR, f"{obj_id}.xml")
+    TAR_path = os.path.join(SIP_DIR, obj_id + '.tar')
+    minioClient = Minio(os.environ.get('S3_API'),
+                        access_key=os.environ.get('S3_ACCESS'),
+                        secret_key=os.environ.get('S3_SECRET'),
+                        secure=True)
+
+    minioClient.fput_object(
+         bucket_name=os.environ.get('S3_BUCKET'),
+         object_name=f"{obj_id}.xml",
+         file_path=SD_path,
+     )
+    minioClient.fput_object(
+        bucket_name=os.environ.get('S3_BUCKET'),
+        object_name=f"{obj_id}.tar",
+        file_path=TAR_path,
+    )
+
+    return "Success"

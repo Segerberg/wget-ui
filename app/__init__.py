@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from flask_babel import Babel, gettext
 from flask_mail import Mail
 from celery import Celery
-
+from dotenv import load_dotenv
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
@@ -18,6 +18,7 @@ login.login_view = 'login'
 __version__ = "0.1"
 
 def make_celery(app):
+    load_dotenv('.flaskenv')
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'],
                     backend=app.config['CELERY_RESULT_BACKEND'])
     TaskBase = celery.Task

@@ -92,3 +92,8 @@ def bytes_to_human_readable(byte_value: int) -> str:
         return f"{byte_value // (1024 ** 4)} TB"
     else:
         return f"{byte_value // (1024 ** 5)} PB"
+
+def convert_db_date_format(original_date):
+
+    formatted_date = original_date.strftime('%Y-%m-%d')
+    return formatted_date

@@ -43,3 +43,10 @@ class AddContentOwnerForm(FlaskForm):
 class EditContentOwnerForm(AddContentOwnerForm):
     owner = StringField('Owner name')
     reference_code = StringField('reference code')
+
+
+class CreateSIPForm(AddContentOwnerForm):
+    SA = SelectField('Submission Agreement')
+
+class AddContentOwnerTargetForm(FlaskForm):
+    content_owner = SelectField('Content Owner')
