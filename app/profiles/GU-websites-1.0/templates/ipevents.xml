@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<premis:premis xmlns:premis="http://www.loc.gov/premis/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://www.loc.gov/premis/v3 http://www.loc.gov/standards/premis/premis.xsd">
+  <premis:object xsi:type="premis:file">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType>UUID</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>{{data.obj_id}}</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:objectCharacteristics>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName>TAR</premis:formatName>
+        </premis:formatDesignation>
+      </premis:format>
+    </premis:objectCharacteristics>
+    <premis:storage>
+      <premis:contentLocation>
+        <premis:contentLocationType>URI</premis:contentLocationType>
+        <premis:contentLocationValue>file:///{{data.obj_id}}.tar</premis:contentLocationValue>
+      </premis:contentLocation>
+    </premis:storage>
+  </premis:object>
+  <premis:event>
+    <premis:eventIdentifier>
+      <premis:eventIdentifierType>ESS</premis:eventIdentifierType>
+      <premis:eventIdentifierValue>{{uuid.uuid4()}}</premis:eventIdentifierValue>
+    </premis:eventIdentifier>
+    <premis:eventType>10400</premis:eventType>
+    <premis:eventDateTime>{{data.ip_creation}}</premis:eventDateTime>
+    <premis:eventDetailInformation>
+      <premis:eventDetail>Created SIP</premis:eventDetail>
+    </premis:eventDetailInformation>
+    <premis:eventOutcomeInformation>
+      <premis:eventOutcome>0</premis:eventOutcome>
+      <premis:eventOutcomeDetail>
+        <premis:eventOutcomeDetailNote>Created SIP</premis:eventOutcomeDetailNote>
+      </premis:eventOutcomeDetail>
+    </premis:eventOutcomeInformation>
+    <premis:linkingAgentIdentifier>
+      <premis:linkingAgentIdentifierType>ESS</premis:linkingAgentIdentifierType>
+      <premis:linkingAgentIdentifierValue>{{data.current_user}}</premis:linkingAgentIdentifierValue>
+      <premis:linkingAgentRole>Producer</premis:linkingAgentRole>
+    </premis:linkingAgentIdentifier>
+    <premis:linkingObjectIdentifier>
+      <premis:linkingObjectIdentifierType>ESS</premis:linkingObjectIdentifierType>
+      <premis:linkingObjectIdentifierValue>{{data.obj_id}}</premis:linkingObjectIdentifierValue>
+    </premis:linkingObjectIdentifier>
+  </premis:event>
+</premis:premis>

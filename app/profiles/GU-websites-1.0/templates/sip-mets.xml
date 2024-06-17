@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ext="ExtensionMETS" xsi:schemaLocation="http://www.loc.gov/METS/ http://xml.ra.se/e-arkiv/METS/version12/CSPackageMETS.xsd ExtensionMETS http://xml.ra.se/e-arkiv/METS/version12/CSPackageExtensionMETS.xsd" PROFILE="http://xml.ra.se/e-arkiv/METS/version12/CommonSpecificationSwedenPackageProfile.xml" ID="ID{{uuid.uuid4()}}" OBJID="{{data.obj_id}}" LABEL="{{data.title}}" TYPE="Webpages" ext:CONTENTTYPESPECIFICATION="FGS ÄHS version 1.0"  ext:APPRAISAL="No" ext:STARTDATE="1995-01-01" ext:ENDDATE="2001-01-01">
+  <mets:metsHdr CREATEDATE="{{data.ip_creation}}" RECORDSTATUS="NEW" ext:OAISSTATUS="SIP" ext:AGREEMENTFORM="AGREEMENT">
+    <mets:agent ROLE="ARCHIVIST" TYPE="ORGANIZATION">
+        <mets:name>Göteborgs universitet</mets:name>
+        <mets:note>ORG:202100-3153</mets:note>
+    </mets:agent>
+    {% for owner in data.content_owners %}
+    <mets:agent ROLE="CREATOR" TYPE="ORGANIZATION">
+      <mets:name>{{owner.owner}}</mets:name>
+      <mets:note>local:{{owner.reference_code}}</mets:note>
+    </mets:agent>
+     {% endfor %}
+    <mets:agent ROLE="CREATOR" TYPE="INDIVIDUAL">
+      <mets:name>{{data.current_user}}</mets:name>
+    </mets:agent>
+    <mets:agent ROLE="CREATOR" TYPE="OTHER" OTHERTYPE="SOFTWARE">
+      <mets:name>WGET-UI</mets:name>
+      <mets:note>{{data.software_version}}</mets:note>
+    </mets:agent>
+    <mets:altRecordID TYPE="SUBMISSIONAGREEMENT">TODO</mets:altRecordID>
+    <mets:metsDocumentID>mets.xml</mets:metsDocumentID>
+  </mets:metsHdr>
+  <mets:amdSec ID="ID{{uuid.uuid4()}}">
+    <mets:digiprovMD ID="ID{{uuid.uuid4()}}">
+      <mets:mdRef MIMETYPE="application/xml" xlink:href="file:///metadata/premis.xml" LOCTYPE="URL" CREATED="{{data.premis_file.creation}}" CHECKSUM="{{data.premis_file.checksum}}" xlink:type="simple" ID="ID{{data.premis_file.uuid}}" MDTYPE="PREMIS" CHECKSUMTYPE="MD5"/>
+    </mets:digiprovMD>
+  </mets:amdSec>
+  <mets:fileSec ID="ID{{uuid.uuid4()}}">
+    <mets:fileGrp ID="ID{{uuid.uuid4()}}">
+      <mets:file ID="{{data.ipevents_file.uuid}}" MIMETYPE="application/xml" SIZE="{{data.ipevents_file.size}}" CREATED="{{data.ipevents_file.creation}}" CHECKSUM="{{data.ipevents_file.checksum}}" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///ipevents.xml" xlink:type="simple"/>
+      </mets:file>
+
+      {%- for file in data.content -%}
+      <mets:file ID="ID{{file.uuid}}" MIMETYPE="application/warc" SIZE="{{file.size}}" CREATED="{{file.creation}}" CHECKSUM="{{file.checksum}}" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///content/{{file.name}}" xlink:type="simple"/>
+      </mets:file>
+      {%- endfor -%}
+      {%- for file in data.schemas -%}
+       <mets:file ID="ID{{file.uuid}}" MIMETYPE="application/xml" SIZE="{{file.size}}" CREATED="{{file.creation}}" CHECKSUM="{{file.checksum}}" CHECKSUMTYPE="MD5">
+        <mets:FLocat LOCTYPE="URL" xlink:href="file:///metadata/{{file.name}}" xlink:type="simple"/>
+      </mets:file>
+      {%- endfor -%}
+    </mets:fileGrp>
+  </mets:fileSec>
+  <mets:structMap ID="ID{{uuid.uuid4()}}">
+    <mets:div LABEL="Package:{{data.obj_id}}">
+      <mets:div LABEL="root">
+        <mets:fptr FILEID="{{data.ipevents_file.uuid}}"/>
+      </mets:div>
+      <mets:div LABEL="content">
+         {%- for file in data.content -%}
+        <mets:fptr FILEID="ID{{file.uuid}}"/>
+        {%- endfor -%}
+      </mets:div>
+      <mets:div LABEL="metadata">
+        {%- for file in data.schemas -%}
+        <mets:fptr FILEID="ID{{file.uuid}}"/>
+        {%- endfor -%}
+        <mets:fptr FILEID="ID2ab0369c-df35-4e97-bd08-4cb88de42f47"/>
+      </mets:div>
+    </mets:div>
+  </mets:structMap>
+</mets:mets>

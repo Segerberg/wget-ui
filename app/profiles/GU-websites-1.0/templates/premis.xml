@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<premis:premis xmlns:premis="http://www.loc.gov/premis/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://www.loc.gov/premis/v3 http://www.loc.gov/standards/premis/premis.xsd">
+  <premis:object xsi:type="premis:file">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType>ESS</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>{{data.obj_id}}</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:preservationLevel>
+      <premis:preservationLevelValue>full</premis:preservationLevelValue>
+    </premis:preservationLevel>
+    <premis:objectCharacteristics>
+      <premis:compositionLevel>0</premis:compositionLevel>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName>tar</premis:formatName>
+        </premis:formatDesignation>
+      </premis:format>
+    </premis:objectCharacteristics>
+  </premis:object>
+  {%- for file in data.content -%}
+  <premis:object xsi:type="premis:file">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType>ESS</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>{{data.obj_id}}/content/{{file.name}}</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:objectCharacteristics>
+      <premis:compositionLevel>0</premis:compositionLevel>
+      <premis:fixity>
+        <premis:messageDigestAlgorithm>MD5</premis:messageDigestAlgorithm>
+        <premis:messageDigest>{{file.checksum}}</premis:messageDigest>
+        <premis:messageDigestOriginator>WGET-UI</premis:messageDigestOriginator>
+      </premis:fixity>
+      <premis:size>{{file.size}}</premis:size>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName>Web ARChive file format</premis:formatName>
+          <premis:formatVersion>1.0</premis:formatVersion>
+        </premis:formatDesignation>
+      </premis:format>
+    </premis:objectCharacteristics>
+    <premis:relationship>
+      <premis:relationshipType>structural</premis:relationshipType>
+      <premis:relationshipSubType>is part of</premis:relationshipSubType>
+      <premis:relatedObjectIdentifier>
+        <premis:relatedObjectIdentifierType>ESS</premis:relatedObjectIdentifierType>
+        <premis:relatedObjectIdentifierValue>{{data.obj_id}}</premis:relatedObjectIdentifierValue>
+      </premis:relatedObjectIdentifier>
+    </premis:relationship>
+  </premis:object>
+  {%- endfor -%}
+  {%- for file in data.schemas -%}
+    <premis:object xsi:type="premis:file">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType>ESS</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>{{data.obj_id}}/metadata/{{file.name}}</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:objectCharacteristics>
+      <premis:compositionLevel>0</premis:compositionLevel>
+      <premis:fixity>
+        <premis:messageDigestAlgorithm>MD5</premis:messageDigestAlgorithm>
+        <premis:messageDigest>{{file.checksum}}</premis:messageDigest>
+        <premis:messageDigestOriginator>WGET-UI</premis:messageDigestOriginator>
+      </premis:fixity>
+      <premis:size>{{file.size}}</premis:size>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName>XML Schema Definition</premis:formatName>
+        </premis:formatDesignation>
+      </premis:format>
+    </premis:objectCharacteristics>
+    <premis:relationship>
+      <premis:relationshipType>structural</premis:relationshipType>
+      <premis:relationshipSubType>is part of</premis:relationshipSubType>
+      <premis:relatedObjectIdentifier>
+        <premis:relatedObjectIdentifierType>ESS</premis:relatedObjectIdentifierType>
+        <premis:relatedObjectIdentifierValue>{{data.obj_id}}</premis:relatedObjectIdentifierValue>
+      </premis:relatedObjectIdentifier>
+    </premis:relationship>
+  </premis:object>
+  {%- endfor -%}
+  <premis:agent>
+    <premis:agentIdentifier>
+      <premis:agentIdentifierType>ESS</premis:agentIdentifierType>
+      <premis:agentIdentifierValue>WGETUI</premis:agentIdentifierValue>
+    </premis:agentIdentifier>
+    <premis:agentName>WGET-UI</premis:agentName>
+    <premis:agentType>software</premis:agentType>
+  </premis:agent>
+</premis:premis>

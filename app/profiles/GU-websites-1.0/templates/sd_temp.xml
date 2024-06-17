@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.loc.gov/METS/ http://xml.essarch.org/METS/version10/Sub
+mitDescription.xsd" PROFILE="http://xml.ra.se/e-arkiv/METS/version12/CommonSpecificationSwedenPackageProfile.xml"
+           ID="ID78b60af7-6dee-4719-9057-62ffb05bde33" OBJID="UUID:9c2e7ffc-f421-474e-b2d5-8d554f783b07" LABEL="AS001"
+           TYPE="SIP">
+    <mets:metsHdr CREATEDATE="2024-06-12T13:47:27.892172+02:00">
+        <mets:agent ROLE="ARCHIVIST" TYPE="ORGANIZATION">
+            <mets:name>Förslagsmyndigheten</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="CREATOR" TYPE="ORGANIZATION">
+            <mets:name>Förslagsmyndigheten, Personal</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="OTHER" OTHERROLE="PRODUCER" TYPE="ORGANIZATION">
+            <mets:name>Förslagsmyndigheten, arkivfunktionen</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="OTHER" OTHERROLE="PRODUCER" TYPE="INDIVIDUAL">
+            <mets:name>Jan Jansson, 08-12 34 56, jan.jansson@fm.se</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="OTHER" OTHERROLE="SUBMITTER" TYPE="ORGANIZATION">
+            <mets:name>Förslagsmyndigheten, servicefunktionen</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="OTHER" OTHERROLE="SUBMITTER" TYPE="INDIVIDUAL">
+            <mets:name>Karl Karlsson, 08-12 34 56, karl.karlsson@fm.se</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="IPOWNER" TYPE="ORGANIZATION">
+            <mets:name>Förslagsmyndigheten, Juridikavdelningen</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="PRESERVATION" TYPE="ORGANIZATION">
+            <mets:name>Riksarkivet</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="ARCHIVIST" TYPE="OTHER" OTHERTYPE="SOFTWARE">
+            <mets:name>W3D3</mets:name>
+            <mets:note>5.0.34</mets:note>
+            <mets:note>Noark 5</mets:note>
+        </mets:agent>
+        <mets:altRecordID TYPE="SUBMISSIONAGREEMENT">af3cc9c4-8b27-4a14-a2f5-913aa96af296</mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_TRANSFER_PROJECT">ESSARCH_f4968ab7-aa2e-489e-afc9-e951729c7ec8
+        </mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_SUBMIT_DESCRIPTION">ESSARCH_2996df71-6d22-4d6a-ab30-2c7ebf509eae
+        </mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_SIP">ESSARCH_e0639919-677f-4bee-b074-6ee5130eadf4</mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_AIP">ESSARCH_7d057eb6-3460-4e3f-8ece-219bd9ccbb3a</mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_DIP">ESSARCH_45ba9eaf-ba64-429d-b2d5-38d3545f3144</mets:altRecordID>
+        <mets:altRecordID TYPE="PROFILE_PRESERVATION_METADATA">ESSARCH_c42dc530-5bb2-4d69-a4b8-382f7893922f
+        </mets:altRecordID>
+        <mets:altRecordID TYPE="STARTDATE">2016-11-10</mets:altRecordID>
+        <mets:altRecordID TYPE="ENDDATE">2016-12-20</mets:altRecordID>
+        <mets:altRecordID TYPE="POLICYID">1</mets:altRecordID>
+        <mets:altRecordID TYPE="POLICYNAME">default</mets:altRecordID>
+        <mets:metsDocumentID>9c2e7ffc-f421-474e-b2d5-8d554f783b07.xml</mets:metsDocumentID>
+    </mets:metsHdr>
+    <mets:fileSec ID="ID220d747d-41bc-4af3-bf1f-af2b1e15f658">
+        <mets:fileGrp ID="IDda6428d5-4186-4824-9f6e-68a3189094af">
+            <mets:file ID="ID956cb8ad-6027-4a8c-b782-0fcb5f81370b" MIMETYPE="application/x-tar" SIZE="245760"
+                       USE="Datafile" CREATED="2024-06-12T13:47:27.892172+02:00"
+                       CHECKSUM="0500d7b0f97b8875dcc7cdb2c6a5672f" CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="file:///9c2e7ffc-f421-474e-b2d5-8d554f783b07.tar"
+                             xlink:type="simple"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap>
+        <mets:div LABEL="Package">
+            <mets:div LABEL="Datafiles">
+                <mets:fptr FILEID="ID956cb8ad-6027-4a8c-b782-0fcb5f81370b"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

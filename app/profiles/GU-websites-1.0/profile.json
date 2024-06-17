@@ -1,0 +1,22 @@
+{
+  "structure": {
+    "content": {
+      "type": "folder",
+      "children": []
+    },
+    "metadata": {
+      "type": "folder",
+      "children": []
+    }
+  },
+  "mets": {"location": "sip-mets.xml", "destination": "."},
+  "ipevents": {"location": "ipevents.xml", "destination": "."},
+  "premis": {"location": "premis.xml", "destination": "./metadata"},
+  "schemas": [
+    {"location": "schemas/CSPackageMETS.xsd", "destination": "./metadata"},
+    {"location": "schemas/CSPackageExtensionMETS.xsd","destination": "./metadata"},
+    {"location": "schemas/premis.xsd","destination": "./metadata"},
+    {"location": "schemas/xlink.xsd","destination": "./metadata"}
+  ]
+}
+

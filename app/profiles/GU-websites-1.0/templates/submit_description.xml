@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xsi:schemaLocation="http://www.loc.gov/METS/ http://xml.essarch.org/METS/version10/SubmitDescription.xsd"
+           PROFILE="http://xml.ra.se/e-arkiv/METS/version12/CommonSpecificationSwedenPackageProfile.xml"
+           ID="ID5ba08d37-c083-4681-9bcd-71e28e02a25e" OBJID="UUID:{{data.obj_id}}" LABEL="{{data.title}}" TYPE="SIP">
+    <mets:metsHdr CREATEDATE="2024-06-06T12:28:14.858106+02:00">
+        <mets:agent ROLE="ARCHIVIST" TYPE="ORGANIZATION">
+            <mets:name>Göteborgs universitet</mets:name>
+            <mets:note>ORG:202100-3153</mets:note>
+        </mets:agent>
+        <mets:agent ROLE="CREATOR" TYPE="ORGANIZATION">
+            <mets:name>TODO</mets:name>
+            <mets:note>local:TODO</mets:note>
+        </mets:agent>
+        <mets:agent ROLE="OTHER" OTHERROLE="SUBMITTER" TYPE="INDIVIDUAL">
+            <mets:name>{{data.current_user}}</mets:name>
+        </mets:agent>
+        <mets:agent ROLE="CREATOR" TYPE="OTHER" OTHERTYPE="SOFTWARE">
+            <mets:name>WGET-UI</mets:name>
+            <mets:note>{{data.software_version}}</mets:note>
+        </mets:agent>
+        <mets:altRecordID TYPE="SUBMISSIONAGREEMENT">{{data.SA}}</mets:altRecordID>
+        <mets:altRecordID TYPE="STARTDATE">{{data.content_start_date}}</mets:altRecordID>
+        <mets:altRecordID TYPE="ENDDATE">{{data.content_end_date}}</mets:altRecordID>
+        <mets:altRecordID TYPE="POLICYID">1</mets:altRecordID>
+        <mets:altRecordID TYPE="POLICYNAME">default</mets:altRecordID>
+        <mets:metsDocumentID>{{data.obj_id}}.xml</mets:metsDocumentID>
+    </mets:metsHdr>
+    <mets:fileSec ID="ID{{uuid.uuid4()}}">
+        <mets:fileGrp ID="ID{{uuid.uuid4()}}">
+            <mets:file ID="ID{{data.tar_file.uuid}}" MIMETYPE="application/x-tar" SIZE="{{data.tar_file.size}}"
+                       USE="Datafile" CREATED="{{data.tar_file.creation}}" CHECKSUM="{{data.tar_file.checksum}}"
+                       CHECKSUMTYPE="MD5">
+                <mets:FLocat LOCTYPE="URL" xlink:href="file:///{{data.obj_id}}.tar" xlink:type="simple"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap>
+        <mets:div LABEL="Package">
+            <mets:div LABEL="Datafiles">
+                <mets:fptr FILEID="ID{{data.tar_file.uuid}}"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>
