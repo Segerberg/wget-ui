@@ -64,7 +64,33 @@
                 </div>
             </div>
         </div>
+
     </div>
+    <div class="row">
+         <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">{{ gettext('Content Owners')}}<button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#addContentOwnerTargetModal">Add</button></div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th>{{ gettext('Name')}}</th>
+
+                        <th>{{ gettext('Actions')}}</th>
+                        </thead>
+                        <tbody>
+                        {% for owner in content_owners %}
+                        <tr>
+                            <td>{{owner.owner}}</td>
+                            <td><a class="btn btn-sm btn-outline-danger" href="#">{{ gettext('Delete')}}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12">
                   <div class="card">
@@ -75,35 +101,24 @@
                     <table class="table">
                         <thead>
                         <th>{{ gettext('#')}}</th>
-                        <th>{{ gettext('Status')}}</th>
+                        <th>{{ gettext('State')}}</th>
                         <th>{{ gettext('Started')}}</th>
                         <th>{{ gettext('Ended')}}</th>
-                        <th>{{ gettext('Result')}}</th>
                         <th>{{ gettext('QA')}}</th>
                         <th>{{ gettext('Actions')}}</th>
                         </thead>
                         <tbody>
                           {% for job in jobs %}
-                          {% if job.startDateTime %}
-                        <tr>
-                            <td><a class="badge rounded-pill bg-success" href="{{url_for('jobDetail', id=job.id)}}">View</a></td>
-                            <td>{% if not job.EndDateTime %}
-                                <span class="badge rounded-pill bg-warning">{{ gettext('Running')}}</span>{% else %}
-                                <span class="badge rounded-pill bg-secondary">{{ gettext('Finished')}}</span>  {% endif %}
-                            </td>
-                            <td>{{job.startDateTime}}</td>
-                            <td>{{job.EndDateTime}}</td>
-                            <td>{{job.result}}</td>
-                            <td>{{job.QA}}</td>
-                           <td>{% if job.task_id %}<a class="btn btn-sm btn-outline-success" disabled style="margin-right: 5px" href="{{url_for('crawl', id=job.id)}}">{{ gettext('Start')}}</a>{%endif%} <a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
 
-                            </tr>
-                            {% else %}
-                          <tr>
-                            <td>{{job.id}}</td>
-                            <td colspan="5"><span class="badge rounded-pill bg-secondary">{{ gettext('Pending')}}</span></td>
-                            <td><a class="btn btn-sm btn-outline-success" style="margin-right: 5px" href="{{url_for('crawl', id=job.id)}}">{{ gettext('Start')}}</a> <a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
-                            {% endif %}
+                        <tr>
+                            <td>{% if job.state != 'prepared' %}<a class="badge rounded-pill bg-success" href="{{url_for('jobDetail', id=job.id)}}">View</a>{% endif %}</td>
+                            <td>
+                                <span class="badge rounded-pill bg-secondary">{{job.state}}</span>
+                            </td>
+                            <td>{{job.startDateTime}}</td
+                            <td>{{job.EndDateTime}}</td>
+                            <td>{% if job.QA %}{{job.QA}}{% else %}{{ gettext('Not assessed')}}{% endif %}</td>
+                           <td>{% if job.state == 'prepared' %}<a class="btn btn-sm btn-outline-success" disabled style="margin-right: 5px" href="{{url_for('crawl', id=job.id)}}">{{ gettext('Start')}}</a>{%endif%} <a class="btn btn-sm btn-outline-danger" href="{{url_for('deleteJob', id=job.id)}}">{{ gettext('Delete')}}</a></td>
                            </tr>
                         {% endfor %}
                         </tbody>
@@ -118,4 +133,6 @@
 {% include 'add_seed_modal.html' %}
 {% include 'add_job_modal.html' %}
 {% include 'edit_seed_modal.html' %}
+{% include 'add_content_owner_modal.html' %}
+
 

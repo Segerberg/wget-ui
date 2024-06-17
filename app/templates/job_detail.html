@@ -4,12 +4,12 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">{{ gettext('Status')}}</div>
+                <div class="card-header">{{ gettext('Job State')}}</div>
                 <div class="card-body">
                     <ul class="list-group list-group">
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                             <div class="ms-2 me-auto">
-                                <span class="badge rounded-pill bg-warning" h="{{url_for('check_task', task_id=job.task_id)}}" hx-trigger="every 1s">Pending</span>
+                                <span class="badge rounded-pill bg-warning" hx-get="{{url_for('check_job_state', id=job.id)}}" hx-trigger="every 1s"></span>
                             </div>
                         </li>
                     </ul>
@@ -19,9 +19,12 @@
             <div class="card">
                 <div class="card-header">{{ gettext('Actions')}}</div>
                 <div class="card-body">
-                    <a href="{{url_for('create_ip', id=job.id)}}" class="btn btn-outline-success">Create SIP</a>
-                    <a href="{{url_for('deleteJob', id=job.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger">Delete</a>
-
+                    {% if job.state == 'crawled' %}
+                    <button class="btn btn-sm btn-outline-success float-end" href="#" data-bs-toggle="modal" data-bs-target="#createSIPModal">{{ gettext('Create SIP')}}</button>
+                    {% else %}
+                    <button class="btn btn-sm btn-outline-success float-end" disabled href="#" data-bs-toggle="modal" data-bs-target="#createSIPModal">{{ gettext('Create SIP')}}</button>
+                    {% endif %}
+                    <a href="{{url_for('deleteJob', id=job.id)}}" onclick="confirmDelete(event)" class="btn btn-outline-danger">{{ gettext('Delete')}}</a>
                 </div>
             </div>
         </div>
@@ -36,9 +39,9 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>File</th>
-                                        <th>Size</th>
-                                        <th>Actions</th>
+                                        <th>{{ gettext('File')}}</th>
+                                        <th>{{ gettext('Size')}}</th>
+                                        <th>{{ gettext('Actions')}}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -68,10 +71,10 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>File</th>
-                                        <th>Created</th>
-                                        <th>Size</th>
-                                        <th>Actions</th>
+                                        <th>{{ gettext('File')}}</th>
+                                        <th>{{ gettext('Created')}}</th>
+                                        <th>{{ gettext('Size')}}</th>
+                                        <th>{{ gettext('Actions')}}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -79,7 +82,7 @@
                                        <td>{{sip}}</td>
                                         <td>{{sip_created}}</td>
                                         <td>{{sip_size}}</td>
-                                        <td></td>
+                                        <td><a href="{{url_for('put_s3', job_id=job.id, obj_id=job.task_id)}}" class="btn btn-sm btn-outline-success">{{ gettext('Preserve')}}</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -91,5 +94,5 @@
     {% endif %}
 </div>
 {% endblock %}
-
+{% include 'create_sip_modal.html' %}
 
